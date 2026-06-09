@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>胡臻烨 — 个人主页</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ========== 导航栏 ========== -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <span class="nav-name">胡臻烨</span>
+      <div class="nav-links">
+        <a href="#about" class="nav-link">关于</a>
+        <a href="#thoughts" class="nav-link">思考</a>
+        <a href="#notes" class="nav-link">手记</a>
+        <a href="#contact" class="nav-link">联系</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========== 侧边导航点 ========== -->
+  <div class="side-dots" id="sideDots">
+    <span class="dot active" data-target="hero"></span>
+    <span class="dot" data-target="about"></span>
+    <span class="dot" data-target="thoughts"></span>
+    <span class="dot" data-target="notes"></span>
+    <span class="dot" data-target="contact"></span>
+  </div>
+
+  <!-- ========== 一、首屏 ========== -->
+  <section class="hero" id="hero">
+    <div class="hero-glow" id="heroGlow"></div>
+    <div class="hero-content">
+      <p class="hero-greeting">你好，我是</p>
+      <h1 class="hero-name">胡臻烨</h1>
+      <p class="hero-tagline">对世界保持好奇，对他人保有善意</p>
+    </div>
+    <div class="scroll-hint" id="scrollHint">
+      <span>向下探索</span>
+      <svg class="scroll-arrow" viewBox="0 0 24 24" width="20" height="20">
+        <path fill="none" stroke="currentColor" stroke-width="1.5" d="M6 9l6 6 6-6"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ========== 二、关于区 ========== -->
+  <section class="about" id="about">
+    <h2 class="section-title">关于</h2>
+
+    <div class="about-card">
+      <div class="about-avatar-wrap">
+        <img src="assets/头像/头像.png" alt="胡臻烨的头像" class="about-avatar">
+      </div>
+      <p class="about-intro">
+        一个一直在思考的人，一个喜欢游戏与番剧的人，一个在遇到正事时还算正经的人。
+      </p>
+    </div>
+
+    <!-- 兴趣标签 -->
+    <div class="interests">
+      <h3 class="interests-title">我的兴趣</h3>
+      <div class="tags-row" id="tagsRow">
+        <button class="tag" data-interest="game">
+          <span class="tag-icon">🎮</span> 游戏
+        </button>
+        <button class="tag" data-interest="music">
+          <span class="tag-icon">🎵</span> 音乐
+        </button>
+        <button class="tag" data-interest="film">
+          <span class="tag-icon">🎬</span> 影视
+        </button>
+        <button class="tag" data-interest="anime">
+          <span class="tag-icon">📺</span> 动漫
+        </button>
+      </div>
+
+      <!-- 数据面板 -->
+      <div class="data-panel" id="dataPanel">
+        <div class="data-panel-inner" id="dataPanelInner">
+          <!-- JS 动态填充 -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 三、思考区（横向翻阅） ========== -->
+  <section class="thoughts" id="thoughts">
+    <h2 class="thoughts-title" id="thoughtsTitle">随笔</h2>
+
+    <div class="thoughts-track-wrapper">
+      <div class="thoughts-track" id="thoughtsTrack">
+      <!-- 文章卡片 1 -->
+      <article class="thought-card" data-index="0">
+        <div class="thought-card-img">
+          <img src="assets/文章封面/洛克王国世界.webp" alt="洛克王国世界">
+        </div>
+        <div class="thought-card-body">
+          <time class="thought-date">即将发布</time>
+          <h3 class="thought-title">聊聊《洛克王国世界》</h3>
+          <p class="thought-summary">小体量工作室经营长线游戏的困难与坚持。</p>
+          <div class="thought-tags"><span>游戏</span></div>
+          <a href="javascript:void(0)" class="thought-link">阅读全文 →</a>
+        </div>
+      </article>
+
+      <!-- 文章卡片 2 -->
+      <article class="thought-card" data-index="1">
+        <div class="thought-card-img">
+          <img src="assets/文章封面/末日后酒店.webp" alt="末日后酒店">
+        </div>
+        <div class="thought-card-body">
+          <time class="thought-date">即将发布</time>
+          <h3 class="thought-title">聊聊《末日后酒店》</h3>
+          <p class="thought-summary">单元剧的独具特色与整体一致性的浑然天成。</p>
+          <div class="thought-tags"><span>动漫</span></div>
+          <a href="javascript:void(0)" class="thought-link">阅读全文 →</a>
+        </div>
+      </article>
+
+      <!-- 文章卡片 3 -->
+      <article class="thought-card" data-index="2">
+        <div class="thought-card-img">
+          <img src="assets/文章封面/作业太多了.png" alt="作业太多了">
+        </div>
+        <div class="thought-card-body">
+          <time class="thought-date">即将发布</time>
+          <h3 class="thought-title">作业太多了</h3>
+          <p class="thought-summary">AI 能力提高了，作业难度也跟着水涨船高。</p>
+          <div class="thought-tags"><span>生活</span></div>
+          <a href="javascript:void(0)" class="thought-link">阅读全文 →</a>
+        </div>
+      </article>
+
+      <!-- 文章卡片 4 -->
+      <article class="thought-card" data-index="3">
+        <div class="thought-card-img">
+          <img src="assets/文章封面/千脑智能.jpg" alt="千脑智能">
+        </div>
+        <div class="thought-card-body">
+          <time class="thought-date">即将发布</time>
+          <h3 class="thought-title">千脑智能与人工智能</h3>
+          <p class="thought-summary">千脑智能神经柱与现有人工智能的相似性和可借鉴方向。</p>
+          <div class="thought-tags"><span>思考</span></div>
+          <a href="javascript:void(0)" class="thought-link">阅读全文 →</a>
+        </div>
+      </article>
+
+      <!-- 文章卡片 5 -->
+      <article class="thought-card" data-index="4">
+        <div class="thought-card-img">
+          <img src="assets/文章封面/中日关系.webp" alt="中日关系">
+        </div>
+        <div class="thought-card-body">
+          <time class="thought-date">即将发布</time>
+          <h3 class="thought-title">中日关系与日本汇率</h3>
+          <p class="thought-summary">了解中日关系变化与日本汇率波动的脉络。</p>
+          <div class="thought-tags"><span>思考</span></div>
+          <a href="javascript:void(0)" class="thought-link">阅读全文 →</a>
+        </div>
+      </article>
+
+      <!-- 文章卡片 6 -->
+      <article class="thought-card" data-index="5">
+        <div class="thought-card-img">
+          <img src="assets/文章封面/生活随笔.jpg" alt="生活随笔">
+        </div>
+        <div class="thought-card-body">
+          <time class="thought-date">留给以后</time>
+          <h3 class="thought-title">生活随笔</h3>
+          <p class="thought-summary">日常的碎碎念，留白待填坑。</p>
+          <div class="thought-tags"><span>生活</span></div>
+          <a href="javascript:void(0)" class="thought-link">阅读全文 →</a>
+        </div>
+      </article>
+    </div>
+    </div><!-- .thoughts-track-wrapper -->
+
+    <!-- 导航指示器 -->
+    <div class="thoughts-nav">
+      <span class="thoughts-arrow thoughts-arrow-left" id="thoughtsArrowLeft">←</span>
+      <div class="thoughts-dots" id="thoughtsDots">
+        <span class="t-dot active"></span>
+        <span class="t-dot"></span>
+        <span class="t-dot"></span>
+        <span class="t-dot"></span>
+        <span class="t-dot"></span>
+        <span class="t-dot"></span>
+      </div>
+      <span class="thoughts-arrow thoughts-arrow-right" id="thoughtsArrowRight">→</span>
+      <span class="thoughts-counter" id="thoughtsCounter">1 / 6</span>
+    </div>
+  </section>
+
+  <!-- ========== 四、手记区 ========== -->
+  <section class="notes" id="notes">
+    <h2 class="section-title">手记</h2>
+
+    <!-- 分类筛选 -->
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all">全部</button>
+      <button class="filter-btn" data-filter="生活">生活</button>
+      <button class="filter-btn" data-filter="游戏">游戏</button>
+      <button class="filter-btn" data-filter="学习">学习</button>
+      <button class="filter-btn" data-filter="素材">素材</button>
+    </div>
+
+    <!-- 瀑布流网格 -->
+    <div class="masonry" id="masonry">
+      <!-- 生活 -->
+      <div class="note-card" data-category="生活">
+        <div class="note-card-img">
+          <img src="assets/手记区/生活/37c66e7d734f9903d07fe2132c054e3b.jpg" alt="生活记录" loading="lazy">
+        </div>
+        <div class="note-card-info">
+          <h4>好吃的</h4>
+          <span class="note-date">生活 · 美食</span>
+        </div>
+      </div>
+      <div class="note-card" data-category="生活">
+        <div class="note-card-img">
+          <img src="assets/手记区/生活/b3813b49dc57d0e129f61d6494641879.jpg" alt="风景" loading="lazy">
+        </div>
+        <div class="note-card-info">
+          <h4>风景</h4>
+          <span class="note-date">生活 · 风景</span>
+        </div>
+      </div>
+
+      <!-- 游戏 -->
+      <div class="note-card" data-category="游戏">
+        <div class="note-card-img">
+          <img src="assets/手记区/游戏/57112070517759209799081.png" alt="游戏截图" loading="lazy">
+        </div>
+        <div class="note-card-info">
+          <h4>游戏瞬间</h4>
+          <span class="note-date">游戏 · 截图</span>
+        </div>
+      </div>
+
+      <!-- 学习 -->
+      <div class="note-card" data-category="学习">
+        <div class="note-card-img">
+          <img src="assets/手记区/学习/78f66497f1a7d825e2318f3732287fe8.png" alt="学习笔记" loading="lazy">
+        </div>
+        <div class="note-card-info">
+          <h4>学习笔记</h4>
+          <span class="note-date">学习 · 笔记</span>
+        </div>
+      </div>
+
+      <!-- 素材 -->
+      <div class="note-card" data-category="素材">
+        <div class="note-card-img">
+          <img src="assets/手记区/素材/2d83ed0c16993420cff9e71598720319.jpg" alt="素材收集" loading="lazy">
+        </div>
+        <div class="note-card-info">
+          <h4>灵感收集</h4>
+          <span class="note-date">素材 · 灵感</span>
+        </div>
+      </div>
+      <div class="note-card" data-category="素材">
+        <div class="note-card-img">
+          <img src="assets/手记区/素材/573adb423bcb3d2618b99e4a0e7dc5f0.jpg" alt="素材整理" loading="lazy">
+        </div>
+        <div class="note-card-info">
+          <h4>工具整理</h4>
+          <span class="note-date">素材 · 工具</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 五、联系区 ========== -->
+  <section class="contact" id="contact">
+    <h2 class="section-title">想和我聊聊？</h2>
+
+    <div class="social-icons">
+      <a href="mailto:m17385892518@163.com" class="social-icon" data-label="写信给我" aria-label="邮箱">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <path d="M22 4L12 13 2 4"/>
+        </svg>
+        <span class="social-label">写信给我</span>
+      </a>
+
+      <a href="https://space.bilibili.com/351637040" target="_blank" rel="noopener" class="social-icon" data-label="看看视频" aria-label="B站">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M18 4l-4 4h-4L6 4H4v16h2v-8h12v8h2V4h-2z"/>
+          <path d="M8 12v4M16 12v4"/>
+        </svg>
+        <span class="social-label">看看视频</span>
+      </a>
+
+      <a href="#" class="social-icon" data-label="听歌吗" aria-label="QQ音乐">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 6v6l4 2"/>
+        </svg>
+        <span class="social-label">听歌吗</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ========== 六、页脚 ========== -->
+  <footer class="footer" id="footer">
+    <div class="footer-ornament">~</div>
+
+    <p class="footer-message">还有一些没放上来，下次再来吧。</p>
+
+    <!-- 隐藏歌单入口 -->
+    <button class="music-toggle" id="musicToggle" aria-label="隐藏歌单">
+      <span class="music-note">♪</span>
+    </button>
+
+    <!-- 迷你播放器 -->
+    <div class="music-player" id="musicPlayer">
+      <div class="music-player-inner">
+        <p class="music-player-title">🎧 听点什么</p>
+        <div class="music-track" data-src="assets/音乐素材/ChiliChill乐团 - 屑屑 (V0).mp3">
+          <span class="track-name">屑屑</span>
+          <span class="track-artist">ChiliChill</span>
+          <button class="track-play">▶</button>
+        </div>
+        <div class="music-track" data-src="assets/音乐素材/张杰 _ HOYO-MiX - 不眠之夜 (V0).mp3">
+          <span class="track-name">不眠之夜</span>
+          <span class="track-artist">张杰</span>
+          <button class="track-play">▶</button>
+        </div>
+        <audio id="audioPlayer" preload="none"></audio>
+      </div>
+    </div>
+
+    <!-- 时间问候 -->
+    <p class="footer-time" id="timeGreeting">🌿 白天的时光，适合慢慢看。</p>
+
+    <!-- 版权行（隐藏彩蛋） -->
+    <p class="footer-copy" id="footerCopy">
+      © 2024 胡臻烨
+      <span class="copy-easter" id="copyEaster"> · 差不多行了</span>
+    </p>
+
+    <!-- 回到顶部 -->
+    <button class="back-to-top" id="backToTop" aria-label="回到顶部">
+      <svg viewBox="0 0 24 24" width="20" height="20">
+        <path fill="none" stroke="currentColor" stroke-width="1.5" d="M6 15l6-6 6 6"/>
+      </svg>
+    </button>
+  </footer>
+
+  <!-- ========== GSAP & ScrollTrigger CDN ========== -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

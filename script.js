@@ -859,34 +859,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const hintsShown = getHintsShown();
 
-  // 兴趣标签首次提示（hover badge）
-  {
-    const tagsRow = $('#tagsRow');
-    const tagHint = document.createElement('span');
-    tagHint.className = 'hint-badge';
-    tagHint.textContent = '点开查看我的个人数据 ↓';
-    tagHint.style.position = 'absolute';
-    tagHint.style.top = '-34px';
-    tagsRow.style.position = 'relative';
-    tagsRow.appendChild(tagHint);
-
-    setTimeout(() => {
-      tagHint.classList.add('show');
-      setTimeout(() => {
-        tagHint.classList.remove('show');
-        setTimeout(() => tagHint.remove(), 400);
-      }, 3500);
-    }, 1500);
-  }
-
-  // 兴趣标签持久指示器（小箭头，始终可见）
-  const tagsRow = $('#tagsRow');
-  const indicator = document.createElement('span');
-  indicator.className = 'tags-indicator';
-  indicator.textContent = '▼';
-  indicator.title = '点击标签查看个人数据';
-  tagsRow.style.position = 'relative';
-  tagsRow.appendChild(indicator);
+  // 兴趣标签：始终可见的侧边提示已写在 HTML 中（.tags-hint-label），无需 JS 额外处理
 
   // 手记卡片提示
   if (!hintsShown.notes) {

@@ -309,23 +309,22 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 
 .tag-icon { font-size: 1.1rem; }
 
-/* 标签可点击指示器 */
-.tags-indicator {
-  position: absolute;
-  bottom: -18px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.55rem;
+/* 标签行左侧永久提示 */
+.tags-hint-label {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.8rem;
   color: var(--accent);
-  opacity: 0.65;
-  pointer-events: none;
-  animation: tagPulse 2.2s ease-in-out infinite;
-  transition: opacity 0.4s;
+  opacity: 0.72;
+  margin-right: 0.4rem;
+  cursor: default;
+  user-select: none;
+  white-space: nowrap;
+  transition: opacity 0.3s;
 }
 
-@keyframes tagPulse {
-  0%, 100% { opacity: 0.35; transform: translateX(-50%) translateY(0); }
-  50%      { opacity: 0.8;  transform: translateX(-50%) translateY(3px); }
+.tags-hint-label:hover {
+  opacity: 1;
 }
 
 /* ---------- 数据面板 ---------- */

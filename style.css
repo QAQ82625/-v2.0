@@ -789,16 +789,29 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 
 /* 回到顶部 */
 .back-to-top {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
   margin: 1.5rem auto 0;
-  color: var(--text-muted);
-  transition: color 0.3s, transform 0.3s;
-  padding: 0.5rem;
+  border-radius: 50%;
+  border: 1px solid rgba(181, 170, 160, 0.35);
+  color: var(--text-light);
+  transition: color 0.3s, transform 0.3s, border-color 0.3s, background 0.3s;
+  padding: 0;
 }
 
 .back-to-top:hover {
   color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(193, 125, 90, 0.06);
   transform: translateY(-3px);
+}
+
+.back-to-top svg {
+  width: 22px;
+  height: 22px;
 }
 
 /* ============================================================

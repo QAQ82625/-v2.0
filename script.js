@@ -55,6 +55,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.addEventListener('scroll', updateSideDots, { passive: true });
 
+  // 导航链接 + 侧边圆点：平滑滚动到目标区域
+  navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = link.getAttribute('href').replace('#', '');
+      const target = $('#' + targetId);
+      if (!target) return;
+      smoothScrollTo(target);
+    });
+  });
+
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      const targetId = dot.dataset.target;
+      const target = $('#' + targetId);
+      if (!target) return;
+      smoothScrollTo(target);
+    });
+  });
+
+  function smoothScrollTo(target) {
+    const rect = target.getBoundingClientRect();
+    const targetY = window.scrollY + rect.top;
+    // 给导航栏留一点空间
+    const offset = 60;
+    window.scrollTo({ top: targetY - offset, behavior: 'smooth' });
+  }
+
   // ==========================================================
   //  3. 首屏 — 入场动画 + 光晕跟随
   // ==========================================================

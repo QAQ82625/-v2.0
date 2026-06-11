@@ -567,34 +567,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const backToTop = $('#backToTop');
 
   backToTop.addEventListener('click', () => {
-    const currentScroll = window.scrollY;
-    if (currentScroll < 100) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
+    // 直接使用浏览器原生平滑滚动，不依赖 GSAP ScrollToPlugin
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // 收尾语微微亮
-    const msg = $('.footer-message');
-    gsap.to(msg, { opacity: 0.5, duration: 0.15, yoyo: true, repeat: 1 });
+    // 滚动到位后触发名字呼吸动画
+    const checkArrived = setInterval(() => {
+      if (window.scrollY <= 5) {
+        clearInterval(checkArrived);
+        gsap.to('.hero-name', {
+          scale: 1.03,
+          duration: 0.3,
+          yoyo: true,
+          repeat: 1,
+          ease: 'power2.out'
+        });
+      }
+    }, 100);
 
-    // 停顿 → 加速 → 减速
-    setTimeout(() => {
-      gsap.to(window, {
-        scrollTo: 0,
-        duration: 1,
-        ease: 'power3.inOut',
-        onComplete: () => {
-          // 名字呼吸动画
-          gsap.to('.hero-name', {
-            scale: 1.03,
-            duration: 0.3,
-            yoyo: true,
-            repeat: 1,
-            ease: 'power2.out'
-          });
-        }
-      });
-    }, 180);
+    // 安全兜底：1.5秒后强制停止检查
+    setTimeout(() => clearInterval(checkArrived), 2000);
   });
 
   // ==========================================================
@@ -873,9 +864,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const tagsRow = $('#tagsRow');
     const tagHint = document.createElement('span');
     tagHint.className = 'hint-badge';
-    tagHint.textContent = '戳我看看';
+    tagHint.textContent = '点开查看我的个人数据 ↓';
     tagHint.style.position = 'absolute';
-    tagHint.style.top = '-30px';
+    tagHint.style.top = '-34px';
     tagsRow.style.position = 'relative';
     tagsRow.appendChild(tagHint);
 
@@ -884,10 +875,32 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         tagHint.classList.remove('show');
         setTimeout(() => tagHint.remove(), 400);
-      }, 3000);
+      }, 3500);
     }, 1500);
 
     markHintShown('tags');
+  }
+
+  // 兴趣标签持久指示器（小箭头）
+  if (!hintsShown.tags_indicator) {
+    const tagsRow = $('#tagsRow');
+    const indicator = document.createElement('span');
+    indicator.className = 'tags-indicator';
+    indicator.textContent = '▼';
+    indicator.title = '点击标签查看个人数据';
+    tagsRow.style.position = 'relative';
+    tagsRow.appendChild(indicator);
+    // 用户首次点击任意标签后隐藏指示器
+    tags.forEach(t => {
+      const origClick = t.onclick;
+      t.addEventListener('click', () => {
+        if (indicator.parentNode) {
+          indicator.style.opacity = '0';
+          setTimeout(() => indicator.remove(), 400);
+          markHintShown('tags_indicator');
+        }
+      }, { once: true });
+    });
   }
 
   // 手记卡片提示

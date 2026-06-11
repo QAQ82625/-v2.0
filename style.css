@@ -309,6 +309,25 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 
 .tag-icon { font-size: 1.1rem; }
 
+/* 标签可点击指示器 */
+.tags-indicator {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.55rem;
+  color: var(--accent);
+  opacity: 0.65;
+  pointer-events: none;
+  animation: tagPulse 2.2s ease-in-out infinite;
+  transition: opacity 0.4s;
+}
+
+@keyframes tagPulse {
+  0%, 100% { opacity: 0.35; transform: translateX(-50%) translateY(0); }
+  50%      { opacity: 0.8;  transform: translateX(-50%) translateY(3px); }
+}
+
 /* ---------- 数据面板 ---------- */
 .data-panel {
   max-height: 0;
@@ -873,20 +892,28 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .cursor-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  font-size: 0.75rem;
-  color: var(--text-muted);
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-light);
   margin-bottom: 1rem;
   cursor: pointer;
-  opacity: 0.6;
-  transition: opacity 0.3s;
+  opacity: 0.75;
+  transition: opacity 0.3s, color 0.3s;
   user-select: none;
+  padding: 0.35rem 1rem;
+  border-radius: 100px;
+  border: 1px solid rgba(181, 170, 160, 0.4);
+  background: rgba(250, 247, 242, 0.5);
 }
 
-.cursor-toggle:hover { opacity: 1; }
+.cursor-toggle:hover {
+  opacity: 1;
+  border-color: var(--accent);
+  color: var(--accent);
+}
 
 .cursor-toggle-dot {
-  width: 6px; height: 6px;
+  width: 8px; height: 8px;
   border-radius: 50%;
   background: var(--accent);
   transition: background 0.3s;
@@ -894,6 +921,11 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 
 .cursor-toggle.off .cursor-toggle-dot {
   background: var(--text-muted);
+}
+
+.cursor-toggle.off {
+  color: var(--text-muted);
+  border-color: rgba(181, 170, 160, 0.25);
 }
 
 /* ============================================================

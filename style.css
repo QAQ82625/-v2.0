@@ -230,6 +230,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 6rem 2rem;
+  position: relative;
 }
 
 .about-card {
@@ -378,10 +379,542 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 }
 
 /* ============================================================
+   v2.0 — 数据可视化面板主题
+   ============================================================ */
+
+/* 通用面板升级 */
+.data-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.55s var(--ease-in-out);
+  margin-top: 1.5rem;
+}
+
+.data-panel.open {
+  max-height: 380px;
+}
+
+.data-panel-inner {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  padding: 1.8rem 2rem;
+  display: inline-block;
+  text-align: left;
+  min-width: 300px;
+  max-width: 420px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s 0.1s, transform 0.4s 0.1s var(--ease-out);
+}
+
+.data-panel.open .data-panel-inner {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ----- A1. 像素游戏面板 ----- */
+.data-panel.game-panel .data-panel-inner {
+  background: #f5f0e4;
+  border: 2px solid #c8b898;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 3px #e8dcc8, 0 6px 24px rgba(61, 50, 43, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.data-panel.game-panel .data-panel-inner::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(61,50,43,0.015) 3px, rgba(61,50,43,0.015) 4px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.game-panel-header {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #5a4a35;
+  text-align: center;
+  margin-bottom: 0.8rem;
+  letter-spacing: 0.06em;
+  position: relative;
+  z-index: 1;
+}
+
+.game-cartridge {
+  background: #9e8c74;
+  border-radius: 3px;
+  padding: 0.8rem 1rem;
+  color: #f0e8d8;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  position: relative;
+  z-index: 1;
+  border-left: 20px solid #7a6b58;
+}
+
+.game-cartridge .game-label {
+  font-size: 0.7rem;
+  color: #c8b898;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.game-cartridge .game-value {
+  font-weight: 500;
+  color: #fff;
+}
+
+.game-sprite-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.3rem;
+  margin-top: 0.6rem;
+  position: relative;
+  z-index: 1;
+}
+
+.game-sprite-avatar {
+  width: 50px;
+  height: 50px;
+  image-rendering: pixelated;
+  object-fit: none;
+}
+
+.game-sprite-shadow {
+  width: 24px;
+  height: 6px;
+  background: rgba(61,50,43,0.15);
+  border-radius: 50%;
+  margin-top: -4px;
+  margin-left: auto;
+  margin-right: 8px;
+}
+
+/* ----- A2. 环形唱片面板 ----- */
+.music-panel .data-panel-inner {
+  background: linear-gradient(135deg, #faf7f2 0%, #f3ede4 100%);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.vinyl-wrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 1rem;
+}
+
+.vinyl-disc {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #2a2218 0deg 15deg, #3d322b 15deg 20deg,
+    #2a2218 20deg 35deg, #3d322b 35deg 40deg,
+    #2a2218 40deg 55deg, #3d322b 55deg 60deg,
+    #2a2218 60deg 75deg, #3d322b 75deg 80deg,
+    #2a2218 80deg 95deg, #3d322b 95deg 100deg,
+    #2a2218 100deg 115deg, #3d322b 115deg 120deg,
+    #2a2218 120deg 135deg, #3d322b 135deg 140deg,
+    #2a2218 140deg 155deg, #3d322b 155deg 160deg,
+    #2a2218 160deg 175deg, #3d322b 175deg 180deg,
+    #2a2218 180deg 195deg, #3d322b 195deg 200deg,
+    #2a2218 200deg 215deg, #3d322b 215deg 220deg,
+    #2a2218 220deg 235deg, #3d322b 235deg 240deg,
+    #2a2218 240deg 255deg, #3d322b 255deg 260deg,
+    #2a2218 260deg 275deg, #3d322b 275deg 280deg,
+    #2a2218 280deg 295deg, #3d322b 295deg 300deg,
+    #2a2218 300deg 315deg, #3d322b 315deg 320deg,
+    #2a2218 320deg 335deg, #3d322b 335deg 340deg,
+    #2a2218 340deg 355deg, #3d322b 355deg 360deg
+  );
+  box-shadow: 0 4px 20px rgba(61,50,43,0.2);
+  animation: vinylSpin 8s linear infinite;
+}
+
+.vinyl-label {
+  position: absolute;
+  inset: 32px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: var(--serif);
+  font-size: 0.8rem;
+  line-height: 1.2;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.3);
+}
+
+.vinyl-label .count {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.vinyl-label .unit {
+  font-size: 0.65rem;
+  opacity: 0.8;
+}
+
+@keyframes vinylSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* 声波纹 */
+.waveform {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  height: 24px;
+  margin-bottom: 0.5rem;
+}
+
+.waveform .bar {
+  width: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: height 0.15s ease;
+}
+
+.waveform .bar:nth-child(odd) { opacity: 0.6; }
+
+.music-data-row {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  text-align: center;
+  line-height: 1.8;
+}
+
+.music-data-row .song-name {
+  font-family: var(--hand);
+  color: var(--accent);
+  font-size: 1rem;
+}
+
+/* ----- A3. 电影票面板 ----- */
+.film-panel .data-panel-inner {
+  background: #fdf8ed;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(61, 50, 43, 0.12);
+}
+
+.film-ticket {
+  display: flex;
+  min-height: 120px;
+}
+
+.film-ticket-stub {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  background: #f8f0e0;
+  padding: 0.8rem 0.5rem;
+  letter-spacing: 0.1em;
+  border-right: 1px dashed #d4c8b0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.film-ticket-body {
+  flex: 1;
+  padding: 1.2rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.film-ticket-header {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+}
+
+.film-title {
+  font-family: var(--hand);
+  font-size: 1.3rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.film-title span {
+  display: block;
+}
+
+.film-tagline {
+  font-size: 0.78rem;
+  color: var(--accent);
+  font-style: italic;
+  letter-spacing: 0.04em;
+}
+
+.film-ticket-notch {
+  position: relative;
+  width: 18px;
+  background: #fdf8ed;
+  flex-shrink: 0;
+}
+
+.film-ticket-notch::before,
+.film-ticket-notch::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 18px;
+  height: 14px;
+  background: var(--bg);
+  border-radius: 50%;
+}
+
+.film-ticket-notch::before { top: -7px; }
+.film-ticket-notch::after  { bottom: -7px; }
+
+/* ----- A4. CRT 小电视面板 ----- */
+.tv-panel .data-panel-inner {
+  background: #3d322b;
+  border-radius: 12px;
+  padding: 0.8rem;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(61, 50, 43, 0.18);
+}
+
+.tv-screen-wrap {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #1a1815;
+  padding: 1rem 1rem 0.8rem;
+ }
+
+.tv-screen {
+  background: linear-gradient(180deg, #1a2a1a 0%, #0f1a0f 100%);
+  border-radius: 4px;
+  padding: 1.2rem 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* CRT扫描线 */
+.tv-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.tv-screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center,
+    transparent 50%, rgba(0,0,0,0.3) 100%);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.tv-anime-title {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  color: #c8e6c8;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 0 8px rgba(180,220,180,0.4);
+}
+
+.tv-anime-star {
+  color: #f0d860;
+  font-size: 0.75rem;
+  margin: 0.2rem 0 0.5rem;
+  position: relative;
+  z-index: 1;
+  animation: starBlink 1.5s ease-in-out infinite;
+}
+
+@keyframes starBlink {
+  0%, 100% { opacity: 0.7; }
+  50%      { opacity: 1; text-shadow: 0 0 6px rgba(240,216,96,0.6); }
+}
+
+.tv-bullet {
+  font-size: 0.75rem;
+  color: #e0d8c0;
+  position: relative;
+  z-index: 1;
+  margin-top: 0.4rem;
+  animation: bulletDrift 8s linear infinite;
+}
+
+@keyframes bulletDrift {
+  0%   { transform: translateX(100%); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateX(-100%); opacity: 0; }
+}
+
+.tv-subtitle {
+  font-size: 0.72rem;
+  color: #809080;
+  position: relative;
+  z-index: 1;
+  margin-top: 0.6rem;
+}
+
+.tv-info-row {
+  color: #b5aaa0;
+  font-size: 0.8rem;
+  margin-top: 0.6rem;
+  position: relative;
+  z-index: 1;
+  line-height: 1.6;
+}
+
+/* 电视旋钮 */
+.tv-knobs {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 0.6rem;
+  position: relative;
+  z-index: 1;
+}
+
+.tv-knob {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #5a5045;
+  position: relative;
+}
+
+.tv-knob::after {
+  content: '';
+  position: absolute;
+  top: -4px; left: -4px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* ============================================================
+   v2.0 — B1. 粒子 Canvas
+   ============================================================ */
+#particleCanvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ============================================================
+   v2.0 — B2. 植物 SVG 装饰
+   ============================================================ */
+.plant-decor {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.55;
+  z-index: 0;
+}
+
+.plant-decor svg {
+  width: 100%;
+  height: 100%;
+  fill: var(--accent-alt);
+}
+
+/* 位置分配 */
+.plant-about {
+  right: 2rem; top: 2rem;
+  width: 80px; height: 80px;
+}
+
+.plant-thoughts {
+  left: 1.5rem; top: 50%;
+  transform: translateY(-50%);
+  width: 60px; height: 60px;
+}
+
+.plant-notes {
+  right: 2rem; top: 3rem;
+  width: 70px; height: 70px;
+}
+
+.plant-footer {
+  left: 2rem; bottom: 2rem;
+  width: 60px; height: 60px;
+}
+
+/* ============================================================
+   v2.0 — B3. 呼吸感动画
+   ============================================================ */
+@keyframes nameBreathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.015); }
+}
+
+.hero-name {
+  animation: nameBreathe 4.5s ease-in-out infinite;
+}
+
+@keyframes tagPulse {
+  0%, 100% { opacity: 0.72; }
+  50%      { opacity: 0.9; }
+}
+
+.tag:not(.active):not(:hover) {
+  animation: tagPulse 3.5s ease-in-out infinite;
+}
+
+/* 滚动引导水母式起伏 */
+@keyframes jellyFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  30%      { transform: translateY(-8px) scale(1.02); }
+  60%      { transform: translateY(2px) scale(0.99); }
+}
+
+.scroll-arrow {
+  animation: jellyFloat 3.2s ease-in-out infinite;
+}
+
+/* 植物摇摆 */
+@keyframes plantSway {
+  0%, 100% { transform: rotate(0deg); }
+  25%      { transform: rotate(2deg); }
+  75%      { transform: rotate(-1.5deg); }
+}
+
+.plant-decor {
+  animation: plantSway 5.5s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.plant-footer {
+  animation: plantSway 6.5s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+/* ============================================================
    三、思考区（横向翻阅）⭐
    ============================================================ */
 .thoughts {
   position: relative;
+  overflow: hidden;
 }
 
 .thoughts-title {
@@ -540,6 +1073,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 6rem 2rem;
+  position: relative;
 }
 
 /* 筛选条 */
@@ -1314,6 +1848,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   .social-icons { gap: 1.5rem; }
 
   .thoughts-arrow { display: none; }
+  .plant-decor { display: none; }
 
   /* 筛选条悬浮 */
   .filter-bar-sticky .filter-bar {

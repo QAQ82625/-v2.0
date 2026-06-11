@@ -115,11 +115,11 @@ document.addEventListener('DOMContentLoaded', () => {
   animateGlow();
 
   // ==========================================================
-  //  4. 关于区 — 兴趣标签交互
+  //  4. 关于区 — 兴趣标签交互 v2.0（可视化面板主题）
   // ==========================================================
   const interestData = {
     game: {
-      icon: '🎮', name: '游戏',
+      icon: '🎮', name: '游戏', theme: 'game',
       items: [
         { label: '最近在玩', value: '洛克王国世界' },
         { label: '最喜欢的类型', value: '模拟经营、角色扮演' },
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ]
     },
     music: {
-      icon: '🎵', name: '音乐',
+      icon: '🎵', name: '音乐', theme: 'music',
       items: [
         { label: '本月已听', value: '241 首' },
         { label: '五月听歌', value: '861 首' },
@@ -136,14 +136,14 @@ document.addEventListener('DOMContentLoaded', () => {
       ]
     },
     film: {
-      icon: '🎬', name: '影视',
+      icon: '🎬', name: '影视', theme: 'film',
       items: [
         { label: '最近看过的好片', value: '《给阿嬷的情书》《挽救计划》' },
         { label: '最爱类型', value: '杂食类，除了喜剧' },
       ]
     },
     anime: {
-      icon: '📺', name: '动漫',
+      icon: '📺', name: '动漫', theme: 'tv',
       items: [
         { label: '追番数量', value: '数不清咯' },
         { label: '最近在追', value: '《正相反的你和我》' },
@@ -156,6 +156,119 @@ document.addEventListener('DOMContentLoaded', () => {
   const dataPanel = $('#dataPanel');
   const dataPanelInner = $('#dataPanelInner');
   let activeInterest = null;
+  let spriteAnimTimer = null;
+  let spriteFrame = 0;
+
+  // 像素小人 sprite 动画
+  function startSpriteAnim() {
+    const spriteImg = $('#gameSpriteImg');
+    if (!spriteImg) return;
+    spriteFrame = 0;
+    clearInterval(spriteAnimTimer);
+    spriteAnimTimer = setInterval(() => {
+      spriteFrame = (spriteFrame + 1) % 4;
+      spriteImg.style.objectPosition = `-${spriteFrame * 50}px 0`;
+    }, 350);
+  }
+
+  function stopSpriteAnim() {
+    clearInterval(spriteAnimTimer);
+    spriteAnimTimer = null;
+  }
+
+  // 声波形动画
+  let waveformTimer = null;
+  function startWaveformAnim() {
+    clearInterval(waveformTimer);
+    const bars = $$('.waveform .bar');
+    if (bars.length === 0) return;
+    waveformTimer = setInterval(() => {
+      bars.forEach(bar => {
+        bar.style.height = (4 + Math.random() * 20) + 'px';
+      });
+    }, 120);
+  }
+
+  function stopWaveformAnim() {
+    clearInterval(waveformTimer);
+    waveformTimer = null;
+  }
+
+  function renderGamePanel(data) {
+    dataPanel.className = 'data-panel game-panel';
+    dataPanelInner.innerHTML = `
+      <div class="game-panel-header">✦ INSERT CARTRIDGE ✦</div>
+      <div class="game-cartridge">
+        <div><span class="game-label">最近在玩</span> <span class="game-value">洛克王国世界</span></div>
+        <div><span class="game-label">最爱类型</span> <span class="game-value">模拟经营 · 角色扮演</span></div>
+        <div><span class="game-label">游戏年龄</span> <span class="game-value">生理年龄减 7 年</span></div>
+      </div>
+      <div class="game-sprite-wrap">
+        <img id="gameSpriteImg" src="assets/像素小人_50x50像素_四帧/赛飞儿 (1).png"
+             alt="像素小人" class="game-sprite-avatar" width="50" height="50" style="object-fit:none;object-position:0 0;">
+      </div>
+      <div class="game-sprite-shadow"></div>
+    `;
+  }
+
+  function renderMusicPanel(data) {
+    dataPanel.className = 'data-panel music-panel';
+    dataPanelInner.innerHTML = `
+      <div class="vinyl-wrap">
+        <div class="vinyl-disc"></div>
+        <div class="vinyl-label">
+          <span class="count">241</span>
+          <span class="unit">首 / 本月</span>
+        </div>
+      </div>
+      <div class="waveform">${Array(12).fill('<span class="bar" style="height:8px;"></span>').join('')}</div>
+      <div class="music-data-row">
+        <div>五月听歌 <strong>861</strong> 首 · <strong>QQ 音乐</strong></div>
+        <div>最近单曲循环：<span class="song-name">Blue Sky, Blue Star</span></div>
+      </div>
+    `;
+  }
+
+  function renderFilmPanel(data) {
+    dataPanel.className = 'data-panel film-panel';
+    dataPanelInner.innerHTML = `
+      <div class="film-ticket">
+        <div class="film-ticket-stub">ADMIT ONE</div>
+        <div class="film-ticket-body">
+          <div class="film-ticket-header">RECENTLY WATCHED</div>
+          <div class="film-title">
+            <span>《给阿嬷的情书》</span>
+            <span>《挽救计划》</span>
+          </div>
+          <div class="film-tagline">杂食类，除了喜剧</div>
+        </div>
+        <div class="film-ticket-notch"></div>
+      </div>
+    `;
+  }
+
+  function renderTVPanel(data) {
+    dataPanel.className = 'data-panel tv-panel';
+    dataPanelInner.innerHTML = `
+      <div class="tv-screen-wrap">
+        <div class="tv-screen">
+          <div class="tv-anime-title">《末日后酒店》</div>
+          <div class="tv-anime-star">★ 都给我去看！★</div>
+          <div class="tv-bullet">数不清咯…… 数不清咯……</div>
+          <div class="tv-subtitle">─ 最近在追：正相反的你和我 ─</div>
+        </div>
+        <div class="tv-knobs">
+          <div class="tv-knob"></div>
+          <div class="tv-knob"></div>
+        </div>
+      </div>
+      <div class="tv-info-row">
+        <div>📺 追番数量：<strong>数不清咯</strong></div>
+      </div>
+    `;
+  }
+
+  const renderers = { game: renderGamePanel, music: renderMusicPanel, film: renderFilmPanel, tv: renderTVPanel };
 
   tags.forEach(tag => {
     tag.addEventListener('click', () => {
@@ -168,14 +281,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = interestData[key];
       if (!data) return;
 
-      dataPanelInner.innerHTML = `
-        <div class="data-panel-header">${data.icon} ${data.name}</div>
-        ${data.items.map(item => `
-          <div class="data-item"><strong>${item.label}</strong>：${item.value}</div>
-        `).join('')}
-      `;
+      // 停止之前的动画
+      stopSpriteAnim();
+      stopWaveformAnim();
+
+      // 渲染对应主题面板
+      const theme = data.theme;
+      if (renderers[theme]) renderers[theme](data);
+
       dataPanel.classList.add('open');
       tags.forEach(t => t.classList.toggle('active', t.dataset.interest === key));
+
+      // 启动主题动画
+      if (theme === 'game') startSpriteAnim();
+      if (theme === 'music') startWaveformAnim();
     });
   });
 
@@ -191,6 +310,9 @@ document.addEventListener('DOMContentLoaded', () => {
     dataPanel.classList.remove('open');
     activeInterest = null;
     tags.forEach(t => t.classList.remove('active'));
+    dataPanel.className = 'data-panel';
+    stopSpriteAnim();
+    stopWaveformAnim();
   }
 
   // ==========================================================
@@ -975,8 +1097,123 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==========================================================
+  //  v2.0 — B1. 粒子生态系统
+  // ==========================================================
+  const particleCanvas = $('#particleCanvas');
+  if (particleCanvas) {
+    const ctx = particleCanvas.getContext('2d');
+    let particles = [];
+    const PARTICLE_COUNT = 14;
+
+    function resizeCanvas() {
+      const heroEl = $('#hero');
+      particleCanvas.width = heroEl.offsetWidth;
+      particleCanvas.height = heroEl.offsetHeight;
+    }
+
+    class Particle {
+      constructor() {
+        this.reset(true);
+      }
+      reset(initial) {
+        this.x = Math.random() * particleCanvas.width;
+        this.y = initial ? Math.random() * particleCanvas.height : particleCanvas.height + 20;
+        this.size = 1.5 + Math.random() * 2.5;
+        this.opacity = 0.3 + Math.random() * 0.4;
+        this.speedX = (Math.random() - 0.5) * 0.2;
+        this.speedY = -(0.15 + Math.random() * 0.4);
+        this.wobbleAmp = Math.random() * 0.4;
+        this.wobbleSpeed = 0.005 + Math.random() * 0.015;
+        this.wobbleOffset = Math.random() * Math.PI * 2;
+        this.opacityPhase = Math.random() * Math.PI * 2;
+        this.opacitySpeed = 0.008 + Math.random() * 0.02;
+      }
+      update(mouseX, mouseY, time) {
+        // 基础移动
+        this.y += this.speedY;
+        this.x += this.speedX + Math.sin(time * this.wobbleSpeed + this.wobbleOffset) * this.wobbleAmp;
+
+        // 鼠标排斥力
+        if (mouseX !== null && mouseY !== null) {
+          const dx = this.x - mouseX;
+          const dy = this.y - mouseY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            const force = (120 - dist) / 120 * 0.8;
+            this.x += (dx / dist) * force;
+            this.y += (dy / dist) * force;
+          }
+        }
+
+        // 边界循环
+        if (this.y < -20) this.y = particleCanvas.height + 10;
+        if (this.x < -20) this.x = particleCanvas.width + 10;
+        if (this.x > particleCanvas.width + 20) this.x = -10;
+
+        // 透明度脉动
+        this.currentOpacity = this.opacity + Math.sin(time * this.opacitySpeed + this.opacityPhase) * 0.15;
+      }
+      draw(ctx) {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(193, 125, 90, ${this.currentOpacity})`;
+        ctx.fill();
+      }
+    }
+
+    resizeCanvas();
+    for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
+
+    let mousePX = null;
+    let mousePY = null;
+
+    $('#hero').addEventListener('mousemove', (e) => {
+      mousePX = e.clientX;
+      mousePY = e.clientY;
+    });
+
+    $('#hero').addEventListener('mouseleave', () => {
+      mousePX = null;
+      mousePY = null;
+    });
+
+    let particleRAF;
+    function animateParticles(time) {
+      ctx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+      particles.forEach(p => {
+        p.update(mousePX, mousePY, time * 0.001);
+        p.draw(ctx);
+      });
+      particleRAF = requestAnimationFrame(animateParticles);
+    }
+    particleRAF = requestAnimationFrame(animateParticles);
+
+    window.addEventListener('resize', resizeCanvas);
+  }
+
+  // ==========================================================
+  //  v2.0 — B2. 植物 SVG 颜色覆盖 + 位置修正
+  // ==========================================================
+  function applyPlantColors() {
+    $$('.plant-svg').forEach(img => {
+      // 使用 CSS filter 将 #e91e63 粉红转为苔藓绿 #8fa88a
+      // 色相旋转约 110 度 + 亮度/饱和度调整
+      img.style.filter = 'hue-rotate(110deg) saturate(0.5) brightness(0.85)';
+      img.style.opacity = '0.5';
+    });
+  }
+
+  // SVG 图片加载完成后应用颜色
+  window.addEventListener('load', () => {
+    setTimeout(applyPlantColors, 300);
+  });
+
+  // 如果图片已缓存，直接应用
+  applyPlantColors();
+
+  // ==========================================================
   // 完成
   // ==========================================================
-  console.log('✨ 个人主页交互就绪（优化版）— 温润材质 × 锐利工艺');
+  console.log('✨ 个人主页交互就绪 v2.0 — 温润材质 × 锐利工艺 × 生命律动');
 
 });

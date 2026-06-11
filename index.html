@@ -366,6 +366,16 @@
 
     <p class="footer-message">还有一些没放上来，下次再来吧。</p>
 
+    <!-- 彩蛋成就入口 -->
+    <span class="achievement-toggle" id="achievementToggle" title="彩蛋收集">👁️</span>
+
+    <!-- 彩蛋成就面板 -->
+    <div class="achievement-panel" id="achievementPanel">
+      <div class="achievement-grid" id="achievementGrid">
+        <!-- JS 动态填充 -->
+      </div>
+    </div>
+
     <!-- 隐藏歌单入口 -->
     <button class="music-toggle" id="musicToggle" aria-label="隐藏歌单">
       <span class="music-note">♪</span>
@@ -410,6 +420,21 @@
       </svg>
     </button>
   </footer>
+
+  <!-- ========== 隐藏贪吃蛇游戏 ========== -->
+  <div class="snake-overlay" id="snakeOverlay">
+    <div class="snake-game-box" id="snakeGameBox">
+      <button class="snake-game-close" id="snakeClose">✕</button>
+      <h3>🐍 贪吃蛇</h3>
+      <canvas id="snakeCanvas" width="360" height="360"></canvas>
+      <div class="snake-score-row">
+        <span><span class="score-label">得分</span> <span class="score-value" id="snakeScore">0</span></span>
+        <span class="score-best">最高：<span id="snakeBest">0</span></span>
+      </div>
+      <p class="snake-controls-hint">方向键 / WASD 控制 · ESC 退出</p>
+      <button class="snake-game-restart" id="snakeRestart" style="display:none;">再来一局</button>
+    </div>
+  </div>
 
   <!-- ========== 文章弹出层 ========== -->
   <div class="article-modal-overlay" id="articleModal">

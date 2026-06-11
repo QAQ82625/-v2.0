@@ -1231,6 +1231,438 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================================
   // 完成
   // ==========================================================
+  // ==========================================================
+  //  v2.0 C1 — 隐藏贪吃蛇游戏
+  // ==========================================================
+  const snakeOverlay = $('#snakeOverlay');
+  const snakeCanvas = $('#snakeCanvas');
+  const snakeCtx = snakeCanvas.getContext('2d');
+  const snakeScoreEl = $('#snakeScore');
+  const snakeBestEl = $('#snakeBest');
+  const snakeClose = $('#snakeClose');
+  const snakeRestart = $('#snakeRestart');
+  const snakeGameBox = $('#snakeGameBox');
+  const footerOrnament = $('.footer-ornament');
+
+  const CELL = 20;
+  const COLS = snakeCanvas.width / CELL;
+  const ROWS = snakeCanvas.height / CELL;
+  const SNAKE_KEY = 'zhenye_snake_best';
+
+  let snakeInterval = null;
+  let snake = [];
+  let food = { x: 0, y: 0 };
+  let direction = { x: 0, y: 0 };
+  let nextDirection = { x: 0, y: 0 };
+  let snakeScore = 0;
+  let snakeBest = parseInt(localStorage.getItem(SNAKE_KEY)) || 0;
+  let snakeRunning = false;
+  let snakeDead = false;
+
+  snakeBestEl.textContent = snakeBest;
+
+  // 触发：点击 ~ 5 次
+  let ornamentClicks = 0;
+  let ornamentTimer = null;
+
+  footerOrnament.addEventListener('click', () => {
+    ornamentClicks++;
+    clearTimeout(ornamentTimer);
+    if (ornamentClicks >= 5) {
+      ornamentClicks = 0;
+      startSnakeGame();
+    } else {
+      ornamentTimer = setTimeout(() => { ornamentClicks = 0; }, 1200);
+    }
+  });
+
+  function startSnakeGame() {
+    // 初始化
+    snake = [
+      { x: Math.floor(COLS / 2), y: Math.floor(ROWS / 2) },
+      { x: Math.floor(COLS / 2) - 1, y: Math.floor(ROWS / 2) },
+      { x: Math.floor(COLS / 2) - 2, y: Math.floor(ROWS / 2) },
+    ];
+    direction = { x: 1, y: 0 };
+    nextDirection = { x: 1, y: 0 };
+    snakeScore = 0;
+    snakeDead = false;
+    snakeScoreEl.textContent = '0';
+    snakeRestart.style.display = 'none';
+    snakeGameBox.classList.remove('snake-dead');
+    placeFood();
+
+    snakeOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    // 清除旧循环
+    clearInterval(snakeInterval);
+    snakeRunning = true;
+    snakeInterval = setInterval(stepSnake, 130);
+  }
+
+  function stepSnake() {
+    if (!snakeRunning || snakeDead) return;
+
+    direction = { ...nextDirection };
+
+    const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+
+    // 撞墙
+    if (head.x < 0 || head.x >= COLS || head.y < 0 || head.y >= ROWS) {
+      gameOver();
+      return;
+    }
+
+    // 撞自己
+    if (snake.some(s => s.x === head.x && s.y === head.y)) {
+      gameOver();
+      return;
+    }
+
+    snake.unshift(head);
+
+    // 吃食物
+    if (head.x === food.x && head.y === food.y) {
+      snakeScore++;
+      snakeScoreEl.textContent = snakeScore;
+      placeFood();
+    } else {
+      snake.pop();
+    }
+
+    drawSnake();
+  }
+
+  function placeFood() {
+    const occupied = new Set(snake.map(s => `${s.x},${s.y}`));
+    const free = [];
+    for (let x = 0; x < COLS; x++) {
+      for (let y = 0; y < ROWS; y++) {
+        if (!occupied.has(`${x},${y}`)) free.push({ x, y });
+      }
+    }
+    if (free.length > 0) {
+      food = free[Math.floor(Math.random() * free.length)];
+    }
+  }
+
+  function drawSnake() {
+    const ctx = snakeCtx;
+    ctx.clearRect(0, 0, snakeCanvas.width, snakeCanvas.height);
+
+    // 网格（极淡）
+    ctx.strokeStyle = 'rgba(61,50,43,0.04)';
+    ctx.lineWidth = 0.5;
+    for (let x = 0; x <= COLS; x++) {
+      ctx.beginPath();
+      ctx.moveTo(x * CELL, 0);
+      ctx.lineTo(x * CELL, snakeCanvas.height);
+      ctx.stroke();
+    }
+    for (let y = 0; y <= ROWS; y++) {
+      ctx.beginPath();
+      ctx.moveTo(0, y * CELL);
+      ctx.lineTo(snakeCanvas.width, y * CELL);
+      ctx.stroke();
+    }
+
+    // 食物（苔藓绿）
+    ctx.fillStyle = 'var(--accent-alt)';
+    const fx = food.x * CELL + 2;
+    const fy = food.y * CELL + 2;
+    ctx.fillStyle = '#8fa88a';
+    ctx.beginPath();
+    ctx.arc(food.x * CELL + CELL / 2, food.y * CELL + CELL / 2, CELL / 2 - 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 蛇身
+    snake.forEach((seg, i) => {
+      const x = seg.x * CELL + 1;
+      const y = seg.y * CELL + 1;
+      const s = CELL - 2;
+
+      if (i === 0) {
+        // 蛇头
+        ctx.fillStyle = '#c17d5a';
+        ctx.beginPath();
+        ctx.roundRect(x, y, s, s, 4);
+        ctx.fill();
+        // 眼睛
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(seg.x * CELL + CELL / 2 + direction.x * 5, seg.y * CELL + CELL / 2 + direction.y * 5, 3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#3d322b';
+        ctx.beginPath();
+        ctx.arc(seg.x * CELL + CELL / 2 + direction.x * 6, seg.y * CELL + CELL / 2 + direction.y * 6, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        // 蛇身
+        const alpha = 1 - (i / snake.length) * 0.5;
+        ctx.fillStyle = `rgba(193, 125, 90, ${alpha})`;
+        ctx.beginPath();
+        ctx.roundRect(x, y, s, s, 3);
+        ctx.fill();
+      }
+    });
+  }
+
+  function gameOver() {
+    snakeDead = true;
+    snakeRunning = false;
+    clearInterval(snakeInterval);
+    snakeInterval = null;
+
+    snakeGameBox.classList.add('snake-dead');
+    snakeRestart.style.display = 'inline-block';
+
+    // 保存最高分
+    if (snakeScore > snakeBest) {
+      snakeBest = snakeScore;
+      localStorage.setItem(SNAKE_KEY, snakeBest);
+      snakeBestEl.textContent = snakeBest;
+    }
+
+    // C2 — 检查贪吃蛇成就
+    checkAchievement('game_master', snakeScore >= 20);
+  }
+
+  snakeRestart.addEventListener('click', () => {
+    startSnakeGame();
+  });
+
+  snakeClose.addEventListener('click', closeSnake);
+  snakeOverlay.addEventListener('click', (e) => {
+    if (e.target === snakeOverlay) closeSnake();
+  });
+
+  function closeSnake() {
+    clearInterval(snakeInterval);
+    snakeInterval = null;
+    snakeRunning = false;
+    snakeDead = false;
+    snakeOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+    snakeGameBox.classList.remove('snake-dead');
+    snakeRestart.style.display = 'none';
+  }
+
+  // 键盘控制
+  document.addEventListener('keydown', (e) => {
+    if (!snakeOverlay.classList.contains('active')) return;
+
+    const key = e.key.toLowerCase();
+    if (key === 'escape') { closeSnake(); return; }
+
+    const newDir = { ...nextDirection };
+    if (key === 'arrowup' || key === 'w') { newDir.x = 0; newDir.y = -1; }
+    if (key === 'arrowdown' || key === 's') { newDir.x = 0; newDir.y = 1; }
+    if (key === 'arrowleft' || key === 'a') { newDir.x = -1; newDir.y = 0; }
+    if (key === 'arrowright' || key === 'd') { newDir.x = 1; newDir.y = 0; }
+
+    // 禁止反向
+    if (newDir.x !== -direction.x || newDir.y !== -direction.y) {
+      nextDirection = newDir;
+    }
+
+    if (key.startsWith('arrow')) e.preventDefault();
+  });
+
+  // 触屏滑动（移动端）
+  let touchStartX = 0;
+  let touchStartY = 0;
+  snakeCanvas.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  snakeCanvas.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) < 20 && Math.abs(dy) < 20) return;
+
+    const newDir = { ...nextDirection };
+    if (Math.abs(dx) > Math.abs(dy)) {
+      newDir.x = dx > 0 ? 1 : -1; newDir.y = 0;
+    } else {
+      newDir.x = 0; newDir.y = dy > 0 ? 1 : -1;
+    }
+    if (newDir.x !== -direction.x || newDir.y !== -direction.y) {
+      nextDirection = newDir;
+    }
+  });
+
+  // ==========================================================
+  //  v2.0 C2 — 彩蛋成就系统
+  // ==========================================================
+  const ACH_KEY = 'zhenye_achievements';
+  const achievementToggle = $('#achievementToggle');
+  const achievementPanel = $('#achievementPanel');
+  const achievementGrid = $('#achievementGrid');
+
+  // 成就定义
+  const achievements = [
+    { id: 'time_traveler', name: '时间旅人', emoji: '⏰', desc: '见过四个时段的主页', hint: '早中晚各来一次' },
+    { id: 'music_lover', name: '音乐鉴赏家', emoji: '🎧', desc: '完整听完一首歌', hint: '听听隐藏歌单' },
+    { id: 'secret_reader', name: '秘密读者', emoji: '📖', desc: '发现页脚的隐藏信息', hint: '在版权行上多停留一会' },
+    { id: 'note_leaver', name: '留言达人', emoji: '📝', desc: '留下一张便签', hint: '在留言墙贴上便签' },
+    { id: 'game_master', name: '游戏高手', emoji: '🎮', desc: '贪吃蛇得分超过 20', hint: '连点页脚 ~ 5 次' },
+    { id: 'night_owl', name: '深夜访客', emoji: '🦉', desc: '在凌晨到访', hint: '0:00~4:00 来访' },
+  ];
+
+  function getAchievements() {
+    try { return JSON.parse(localStorage.getItem(ACH_KEY)) || {}; } catch { return {}; }
+  }
+
+  function unlockAchievement(id) {
+    const data = getAchievements();
+    if (data[id]) return; // 已解锁
+    data[id] = Date.now();
+    localStorage.setItem(ACH_KEY, JSON.stringify(data));
+    renderAchievements();
+    spawnSparkles();
+  }
+
+  function checkAchievement(id, condition) {
+    if (condition) unlockAchievement(id);
+  }
+
+  // 检查"深夜访客"
+  {
+    const hour = new Date().getHours();
+    if (hour >= 0 && hour < 4) unlockAchievement('night_owl');
+  }
+
+  // 检查"时间旅人"（四个时段都来过）
+  function checkTimeTraveler() {
+    const hour = new Date().getHours();
+    let period;
+    if (hour >= 6 && hour < 9) period = 'morning';
+    else if (hour >= 9 && hour < 18) period = 'day';
+    else if (hour >= 18 && hour < 22) period = 'evening';
+    else period = 'night';
+
+    const TRAVEL_KEY = 'zhenye_time_periods';
+    const periods = JSON.parse(localStorage.getItem(TRAVEL_KEY)) || [];
+    if (!periods.includes(period)) {
+      periods.push(period);
+      localStorage.setItem(TRAVEL_KEY, JSON.stringify(periods));
+    }
+    if (periods.length >= 4) unlockAchievement('time_traveler');
+  }
+  checkTimeTraveler();
+
+  // 留言提交时解锁（hook 到现有留言提交）
+  const origMessageSubmit = $('#messageForm')?.onsubmit;
+  if ($('#messageForm')) {
+    $('#messageForm').addEventListener('submit', () => {
+      setTimeout(() => unlockAchievement('note_leaver'), 100);
+    });
+  }
+
+  // 歌单听完一首解锁（hook 到 audio ended）
+  const origAudioEnded = audioPlayer?.onended;
+  audioPlayer.addEventListener('ended', () => {
+    unlockAchievement('music_lover');
+  });
+
+  // 隐藏一句话被发现时解锁（hook 到 hover）
+  const origFooterEnter = footerCopy?.onmouseenter;
+  footerCopy.addEventListener('mouseleave', () => {
+    if (copyEaster.textContent === secretText) {
+      unlockAchievement('secret_reader');
+    }
+  });
+
+  function renderAchievements() {
+    const data = getAchievements();
+    achievementGrid.innerHTML = achievements.map(a => {
+      const unlocked = !!data[a.id];
+      return `
+        <div class="achievement-badge${unlocked ? ' unlocked' : ''}" title="${unlocked ? a.desc : '???'}">
+          <span>${unlocked ? a.emoji : '🔒'}</span>
+          <span class="ach-tooltip">${unlocked ? a.name : '???'}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
+  renderAchievements();
+
+  achievementToggle.addEventListener('click', () => {
+    achievementPanel.classList.toggle('open');
+  });
+
+  // 解锁时纸屑动画
+  function spawnSparkles() {
+    const container = document.createElement('div');
+    container.className = 'ach-sparkle';
+    container.style.left = '50%';
+    container.style.top = '50%';
+    document.body.appendChild(container);
+
+    for (let i = 0; i < 14; i++) {
+      const spark = document.createElement('div');
+      spark.className = 'spark';
+      spark.style.setProperty('--sx', `${(Math.random() - 0.5) * 160}px`);
+      spark.style.setProperty('--sy', `${(Math.random() - 0.5) * 120 - 40}px`);
+      spark.style.animationDelay = `${Math.random() * 0.3}s`;
+      container.appendChild(spark);
+    }
+
+    setTimeout(() => container.remove(), 1200);
+  }
+
+  // ==========================================================
+  //  v2.0 E1 — 全天候氛围系统
+  // ==========================================================
+  const ATMOSPHERE = {
+    dawn:   { hour: [6,9],   bg: '#f7f5f2', bgWarm: '#f4efe9', glowR:160, glowG:170, glowB:185, glowA:0.06, pR:200, pG:205, pB:210 },
+    morning:{ hour: [9,12],  bg: '#faf7f2', bgWarm: '#f5f0e8', glowR:200, glowG:185, glowB:160, glowA:0.06, pR:210, pG:200, pB:175 },
+    noon:   { hour: [12,18], bg: '#faf5ec', bgWarm: '#f6efe4', glowR:212, glowG:168, glowB:83,  glowA:0.08, pR:220, pG:190, pB:140 },
+    dusk:   { hour: [18,22], bg: '#f7f0e5', bgWarm: '#f3e9da', glowR:193, glowG:125, glowB:90,  glowA:0.09, pR:200, pG:150, pB:100 },
+    night:  { hour: [22,24], bg: '#f5ede2', bgWarm: '#f1e5d5', glowR:170, glowG:110, glowB:75,  glowA:0.08, pR:160, pG:140, pB:170 },
+    late:   { hour: [0,6],   bg: '#f5ede2', bgWarm: '#f1e5d5', glowR:170, glowG:110, glowB:75,  glowA:0.08, pR:160, pG:140, pB:170 },
+  };
+
+  function getAtmosphere() {
+    const hour = new Date().getHours();
+    for (const [key, cfg] of Object.entries(ATMOSPHERE)) {
+      if (hour >= cfg.hour[0] && hour < cfg.hour[1]) return { key, ...cfg };
+    }
+    return { key: 'night', ...ATMOSPHERE.night };
+  }
+
+  function applyAtmosphere(atm) {
+    const root = document.documentElement;
+    root.style.setProperty('--bg', atm.bg);
+    root.style.setProperty('--bg-warm', atm.bgWarm);
+    root.style.setProperty('--glow-r', atm.glowR);
+    root.style.setProperty('--glow-g', atm.glowG);
+    root.style.setProperty('--glow-b', atm.glowB);
+    root.style.setProperty('--particle-r', atm.pR);
+    root.style.setProperty('--particle-g', atm.pG);
+    root.style.setProperty('--particle-b', atm.pB);
+    // 更新光晕颜色
+    if (heroGlow) {
+      heroGlow.style.background = `radial-gradient(circle, rgba(${atm.glowR},${atm.glowG},${atm.glowB},${atm.glowA}) 0%, rgba(${atm.glowR},${atm.glowG},${atm.glowB},${(atm.glowA/2).toFixed(2)}) 30%, transparent 70%)`;
+    }
+  }
+
+  let currentAtmosphere = null;
+  function atmosphereTick() {
+    const atm = getAtmosphere();
+    if (!currentAtmosphere || currentAtmosphere.key !== atm.key) {
+      currentAtmosphere = atm;
+      applyAtmosphere(atm);
+    }
+    // 同时更新时间问候
+    updateTimeGreeting();
+  }
+
+  atmosphereTick();
+  setInterval(atmosphereTick, 30000); // 每30秒检查一次
+
   console.log('✨ 个人主页交互就绪 v2.0 — 温润材质 × 锐利工艺 × 生命律动');
 
 });

@@ -13,6 +13,8 @@
   --accent:     #c17d5a;
   --accent-alt: #8fa88a;
   --accent-amber: #d4a853;
+  --glow-r: 193; --glow-g: 125; --glow-b: 90; /* 光晕 RGB，供 JS 动态更新 */
+  --particle-r: 193; --particle-g: 125; --particle-b: 90;
   --card-bg:    #fefcf9;
   --card-shadow: 0 2px 16px rgba(61, 50, 43, 0.06);
   --card-shadow-hover: 0 8px 32px rgba(61, 50, 43, 0.12);
@@ -2054,6 +2056,226 @@ a,
     display: block;
     text-align: center;
   }
+}
+
+/* ============================================================
+   v2.0 C1 — 隐藏贪吃蛇游戏
+   ============================================================ */
+.snake-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  background: rgba(30, 22, 16, 0.82);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease-out);
+}
+
+.snake-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.snake-game-box {
+  background: #faf5ec;
+  border-radius: var(--radius);
+  box-shadow: 0 16px 64px rgba(0,0,0,0.35);
+  padding: 1.8rem;
+  text-align: center;
+  position: relative;
+}
+
+.snake-game-box h3 {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  color: var(--text);
+  margin-bottom: 0.6rem;
+}
+
+.snake-game-box canvas {
+  display: block;
+  margin: 0 auto;
+  border-radius: 4px;
+  background: #f0e8d8;
+  box-shadow: inset 0 0 0 1px rgba(61,50,43,0.08);
+}
+
+.snake-score-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 0.6rem;
+  font-family: var(--sans);
+}
+
+.snake-score-row .score-label {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.snake-score-row .score-value {
+  font-family: var(--hand);
+  font-size: 1.3rem;
+  color: var(--accent);
+}
+
+.snake-score-row .score-best {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.snake-controls-hint {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+  opacity: 0.7;
+}
+
+.snake-game-close {
+  position: absolute;
+  top: 0.6rem; right: 0.8rem;
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  transition: color 0.3s;
+}
+
+.snake-game-close:hover { color: var(--accent); }
+
+.snake-game-restart {
+  margin-top: 0.6rem;
+  padding: 0.35rem 1.2rem;
+  border-radius: 100px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.85rem;
+  transition: background 0.3s;
+}
+
+.snake-game-restart:hover { background: #a86a48; }
+
+.snake-dead .snake-game-box {
+  opacity: 0.9;
+}
+
+/* ============================================================
+   v2.0 C2 — 彩蛋成就系统
+   ============================================================ */
+.achievement-toggle {
+  display: inline-block;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  opacity: 0.4;
+  cursor: pointer;
+  transition: opacity 0.3s;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  user-select: none;
+}
+
+.achievement-toggle:hover { opacity: 0.8; }
+
+.achievement-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s var(--ease-in-out);
+  margin: 0 auto;
+}
+
+.achievement-panel.open {
+  max-height: 500px;
+}
+
+.achievement-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1rem 0;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.achievement-badge {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: #ede7df;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  position: relative;
+  transition: background 0.4s, box-shadow 0.4s, transform 0.3s;
+  flex-shrink: 0;
+}
+
+.achievement-badge.unlocked {
+  background: #fef9e7;
+  box-shadow: 0 2px 12px rgba(212, 168, 83, 0.25);
+}
+
+.achievement-badge:hover {
+  transform: scale(1.08);
+}
+
+.achievement-badge .ach-tooltip {
+  position: absolute;
+  bottom: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6rem;
+  color: var(--text-light);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  background: var(--card-bg);
+  padding: 0.15rem 0.5rem;
+  border-radius: 100px;
+  box-shadow: 0 1px 6px rgba(61,50,43,0.08);
+}
+
+.achievement-badge:hover .ach-tooltip { opacity: 1; }
+
+/* 解锁庆祝粒子 */
+.ach-sparkle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 2600;
+}
+
+.ach-sparkle .spark {
+  position: absolute;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent-amber);
+  animation: sparkBurst 0.9s ease-out forwards;
+}
+
+@keyframes sparkBurst {
+  0%   { transform: translate(0,0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--sx), var(--sy)) scale(0); opacity: 0; }
+}
+
+/* ============================================================
+   v2.0 E1 — 全天候氛围（CSS 过渡支持）
+   ============================================================ */
+/* CSS 自定义属性过渡由 JS 触发 */
+body {
+  transition: background 3s ease;
+}
+
+.hero {
+  transition: background 3s ease;
+}
+
+.hero-glow {
+  transition: background 4s ease;
 }
 
 /* ============================================================

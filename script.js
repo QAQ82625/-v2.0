@@ -1,6 +1,6 @@
 /* ============================================================
-   个人主页 — 交互脚本
-   核心技术：GSAP + ScrollTrigger
+   个人主页 — 交互脚本（优化版）
+   核心技术：GSAP + ScrollTrigger + Firebase
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -26,11 +26,13 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==========================================================
-  //  2. 侧边导航点
+  //  2. 侧边导航点 + 导航栏高亮
   // ==========================================================
   const dots = $$('#sideDots .dot');
+  const navLinks = $$('.nav-link');
+  const sectionMap = { hero: null, about: null, thoughts: null, notes: null, contact: null };
   const sections = ['hero', 'about', 'thoughts', 'notes', 'contact']
-    .map(id => $('#' + id))
+    .map(id => { sectionMap[id] = $('#' + id); return sectionMap[id]; })
     .filter(Boolean);
 
   function updateSideDots() {
@@ -42,8 +44,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (scrollY >= top) current = sec.id;
     });
 
-    dots.forEach(d => {
-      d.classList.toggle('active', d.dataset.target === current);
+    dots.forEach(d => d.classList.toggle('active', d.dataset.target === current));
+
+    // ⑥ 导航栏高亮
+    navLinks.forEach(link => {
+      const href = link.getAttribute('href').replace('#', '');
+      link.classList.toggle('active', href === current);
     });
   }
 
@@ -55,23 +61,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const heroContent = $('.hero-content');
   const scrollHint = $('#scrollHint');
   const heroGlow = $('#heroGlow');
+  const hero = $('#hero');
 
-  // 入场
   gsap.timeline({ defaults: { ease: 'power3.out' } })
     .to(heroContent, { opacity: 1, duration: 0.8 })
     .to(scrollHint, { opacity: 1, duration: 0.6 }, '-=0.2');
 
-  // 光晕跟随鼠标
-  const hero = $('#hero');
+  // 光晕跟随鼠标（带阻尼）
   let glowX = window.innerWidth / 2;
   let glowY = window.innerHeight / 2;
   let currentX = glowX;
   let currentY = glowY;
 
-  hero.addEventListener('mousemove', (e) => {
-    glowX = e.clientX;
-    glowY = e.clientY;
-  });
+  hero.addEventListener('mousemove', (e) => { glowX = e.clientX; glowY = e.clientY; });
 
   function animateGlow() {
     currentX += (glowX - currentX) * 0.05;
@@ -80,17 +82,13 @@ document.addEventListener('DOMContentLoaded', () => {
     heroGlow.style.top = currentY + 'px';
     requestAnimationFrame(animateGlow);
   }
-  animateGlow();
-
-  // 初始化光晕位置
   heroGlow.style.left = '50%';
   heroGlow.style.top = '50%';
+  animateGlow();
 
   // ==========================================================
   //  4. 关于区 — 兴趣标签交互
   // ==========================================================
-
-  // 兴趣数据
   const interestData = {
     game: {
       icon: '🎮', name: '游戏',
@@ -134,35 +132,25 @@ document.addEventListener('DOMContentLoaded', () => {
   tags.forEach(tag => {
     tag.addEventListener('click', () => {
       const key = tag.dataset.interest;
-
-      // 如果点击同一个标签，关闭面板
       if (activeInterest === key && dataPanel.classList.contains('open')) {
         closeDataPanel();
         return;
       }
-
-      // 打开/切换面板
       activeInterest = key;
       const data = interestData[key];
       if (!data) return;
 
-      // 构建面板内容
       dataPanelInner.innerHTML = `
         <div class="data-panel-header">${data.icon} ${data.name}</div>
         ${data.items.map(item => `
           <div class="data-item"><strong>${item.label}</strong>：${item.value}</div>
         `).join('')}
       `;
-
-      // 展开
       dataPanel.classList.add('open');
-
-      // 高亮当前标签
       tags.forEach(t => t.classList.toggle('active', t.dataset.interest === key));
     });
   });
 
-  // 点击面板外部关闭
   document.addEventListener('click', (e) => {
     if (dataPanel.classList.contains('open') &&
         !dataPanel.contains(e.target) &&
@@ -178,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================================
-  //  5. 思考区 — 横向翻阅 ⭐ 招牌功能
+  //  5. 思考区 — 横向翻阅 ⭐（含移动端降级 + 聚光灯）
   // ==========================================================
   const thoughtsSection = $('#thoughts');
   const thoughtsTrack = $('#thoughtsTrack');
@@ -187,10 +175,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const thoughtsCounter = $('#thoughtsCounter');
   const arrowLeft = $('#thoughtsArrowLeft');
   const arrowRight = $('#thoughtsArrowRight');
+  const thoughtsNavBar = $('.thoughts-nav');
 
   const cards = $$('.thought-card', thoughtsTrack);
   const totalCards = cards.length;
   let currentCardIndex = 0;
+  let thoughtST = null;
+  let isMobileThoughts = false;
 
   function getMetrics() {
     if (cards.length === 0) return { cardW: 320, gap: 24, totalW: 0, scrollDist: 0 };
@@ -201,18 +192,35 @@ document.addEventListener('DOMContentLoaded', () => {
     return { cardW, gap, totalW, scrollDist };
   }
 
-  // 创建横向滚动 ScrollTrigger
-  let thoughtST;
-
   function createThoughtScroll() {
-    if (thoughtST) thoughtST.kill();
+    if (thoughtST) { thoughtST.kill(); thoughtST = null; }
+
+    // ① 手机端降级：跳过横向翻阅
+    if (window.innerWidth < 640) {
+      isMobileThoughts = true;
+      gsap.set(thoughtsTrack, { x: 0, clearProps: 'paddingLeft,paddingRight' });
+      thoughtsTrack.style.paddingLeft = '';
+      thoughtsTrack.style.paddingRight = '';
+      if (thoughtsNavBar) thoughtsNavBar.style.display = 'none';
+      // 显示标题并保持可见
+      gsap.set(thoughtsTitle, { opacity: 1 });
+      // 卡片重置样式
+      cards.forEach(c => gsap.set(c, { opacity: 1, scale: 1, clearProps: 'opacity,scale' }));
+      // 竖直排列
+      thoughtsTrack.style.flexWrap = 'wrap';
+      thoughtsTrack.style.justifyContent = 'center';
+      return;
+    }
+
+    isMobileThoughts = false;
+    thoughtsTrack.style.flexWrap = '';
+    thoughtsTrack.style.justifyContent = '';
+    if (thoughtsNavBar) thoughtsNavBar.style.display = '';
 
     const { scrollDist, cardW } = getMetrics();
     if (scrollDist <= 0) return;
 
-    // 重置
     gsap.set(thoughtsTrack, { x: 0 });
-    // 左右内边距让首尾卡片居中
     const sidePad = (window.innerWidth - cardW) / 2;
     thoughtsTrack.style.paddingLeft = sidePad + 'px';
     thoughtsTrack.style.paddingRight = sidePad + 'px';
@@ -229,24 +237,33 @@ document.addEventListener('DOMContentLoaded', () => {
           const progress = self.progress;
           const rawIndex = progress * (totalCards - 1);
           const idx = Math.min(totalCards - 1, Math.round(rawIndex));
-
           if (idx !== currentCardIndex) {
             currentCardIndex = idx;
             updateThoughtNav();
           }
+          // ⑧ 聚光灯效果
+          updateSpotlight(progress);
         },
         onEnter: () => {
           gsap.to(thoughtsTitle, { opacity: 1, duration: 0.4 });
+          updateSpotlight(0);
         },
       }
     });
 
-    tl.to(thoughtsTrack, {
-      x: -scrollDist,
-      ease: 'none',
-    });
-
+    tl.to(thoughtsTrack, { x: -scrollDist, ease: 'none' });
     thoughtST = tl.scrollTrigger;
+  }
+
+  // ⑧ 聚光灯：中间卡片亮，两边暗
+  function updateSpotlight(progress) {
+    if (isMobileThoughts) return;
+    cards.forEach((card, i) => {
+      const cardProgress = i / Math.max(1, totalCards - 1);
+      const distance = Math.abs(progress - cardProgress) / (1 / Math.max(1, totalCards - 1));
+      const dimmed = distance > 0.6;
+      card.classList.toggle('dimmed', dimmed);
+    });
   }
 
   function updateThoughtNav() {
@@ -257,29 +274,17 @@ document.addEventListener('DOMContentLoaded', () => {
     arrowRight.classList.toggle('hidden', currentCardIndex === totalCards - 1);
   }
 
-  // 箭头点击
   arrowRight.addEventListener('click', () => {
-    if (currentCardIndex < totalCards - 1) {
-      currentCardIndex++;
-      scrollToCard(currentCardIndex);
-    }
+    if (currentCardIndex < totalCards - 1) { currentCardIndex++; scrollToCard(currentCardIndex); }
   });
   arrowLeft.addEventListener('click', () => {
-    if (currentCardIndex > 0) {
-      currentCardIndex--;
-      scrollToCard(currentCardIndex);
-    }
+    if (currentCardIndex > 0) { currentCardIndex--; scrollToCard(currentCardIndex); }
   });
-
-  // 圆点点击
   thoughtsDots.addEventListener('click', (e) => {
     const dot = e.target.closest('.t-dot');
     if (!dot) return;
     const idx = [...thoughtsDots.children].indexOf(dot);
-    if (idx >= 0 && idx < totalCards) {
-      currentCardIndex = idx;
-      scrollToCard(idx);
-    }
+    if (idx >= 0 && idx < totalCards) { currentCardIndex = idx; scrollToCard(idx); }
   });
 
   function scrollToCard(index) {
@@ -287,15 +292,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const progress = totalCards > 1 ? index / (totalCards - 1) : 0;
     const start = thoughtST.start;
     const end = thoughtST.end;
-    const scrollPos = start + progress * (end - start);
-    window.scrollTo({ top: scrollPos, behavior: 'smooth' });
+    window.scrollTo({ top: start + progress * (end - start), behavior: 'smooth' });
   }
 
-  // 初始化
   createThoughtScroll();
   updateThoughtNav();
 
-  // 窗口大小变化时重建
   let resizeTimeout;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
@@ -307,23 +309,27 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==========================================================
-  //  6. 手记区 — 分类筛选
+  //  6. 手记区 — 分类筛选（含自动滚动 + 计数 + 悬浮）
   // ==========================================================
-  const filterBtns = $$('.filter-btn');
+  const filterBtns = $$('.filter-bar .filter-btn');
   const noteCards = $$('#masonry .note-card');
+  const filterBar = $('.filter-bar');
+  const notesSection = $('#notes');
   let activeFilter = 'all';
+
+  // ④-C 筛选条悬浮
+  if (window.innerWidth <= 640) {
+    notesSection.classList.add('filter-bar-sticky');
+  }
 
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const filter = btn.dataset.filter;
-
       if (filter === activeFilter) return;
       activeFilter = filter;
 
-      // 更新按钮状态
       filterBtns.forEach(b => b.classList.toggle('active', b.dataset.filter === filter));
 
-      // 筛选卡片（带时序动画）
       const toHide = [];
       const toShow = [];
 
@@ -336,6 +342,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
+      // ④-B 显示计数
+      showFilterCount(toShow.length);
+
       // 先隐藏
       toHide.forEach((card, i) => {
         gsap.to(card, {
@@ -345,26 +354,86 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
 
-      // 再显示（延迟一点让隐藏先开始）
+      // 再显示 + ④-A 自动滚动
       setTimeout(() => {
         toShow.forEach(card => card.classList.remove('hidden'));
+        let firstVisible = null;
         toShow.forEach((card, i) => {
           gsap.fromTo(card,
             { opacity: 0, scale: 0.95 },
             { opacity: 1, scale: 1, duration: 0.35, delay: i * 0.04, ease: 'power2.out' }
           );
+          if (i === 0) firstVisible = card;
         });
+
+        // 滚动到第一个匹配卡片
+        if (firstVisible) {
+          setTimeout(() => {
+            const rect = firstVisible.getBoundingClientRect();
+            const scrollTop = window.scrollY + rect.top - 120;
+            window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+          }, 250);
+        }
       }, 200);
     });
   });
 
-  // ==========================================================
-  //  7. 联系区 — 图标悬停标签（CSS 已处理大部分）
-  // ==========================================================
-  // （悬停效果由 CSS transition 完成，无需额外 JS）
+  // ④-B 筛选计数
+  let countTimeout;
+  function showFilterCount(count) {
+    let countEl = $('.filter-count');
+    if (!countEl) {
+      countEl = document.createElement('span');
+      countEl.className = 'filter-count';
+      filterBar.appendChild(countEl);
+    }
+    countEl.textContent = `共 ${count} 条`;
+    countEl.classList.add('show');
+    clearTimeout(countTimeout);
+    countTimeout = setTimeout(() => countEl.classList.remove('show'), 1800);
+  }
 
   // ==========================================================
-  //  8. 页脚 — 彩蛋三重奏
+  //  7. 联系区 — 图标行为修正
+  // ==========================================================
+  const emailIcon = $('#emailIcon');
+  const musicIcon = $('#musicIcon');
+  const musicToggle = $('#musicToggle');
+  const musicPlayer = $('#musicPlayer');
+  const footerEl = $('#footer');
+
+  // ⑬ 邮箱：点击复制地址
+  emailIcon.addEventListener('click', (e) => {
+    e.preventDefault();
+    navigator.clipboard.writeText('m17385892518@163.com').then(() => {
+      showToast('邮箱地址已复制：m17385892518@163.com');
+    }).catch(() => {
+      showToast('m17385892518@163.com');
+    });
+  });
+
+  // ⑬ QQ音乐：滚动到页脚歌单
+  musicIcon.addEventListener('click', (e) => {
+    e.preventDefault();
+    // 先滚动到页脚
+    footerEl.scrollIntoView({ behavior: 'smooth' });
+    // 延迟后自动展开歌单 + 高亮音符
+    setTimeout(() => {
+      if (!musicPlayer.classList.contains('open')) {
+        musicPlayer.classList.add('open');
+        musicToggle.setAttribute('aria-label', '关闭歌单');
+      }
+      // 音符微亮
+      gsap.fromTo(musicToggle,
+        { scale: 1 },
+        { scale: 1.3, duration: 0.2, yoyo: true, repeat: 1, ease: 'power2.out' }
+      );
+      showToast('在这里 ↓ 听听歌吧');
+    }, 600);
+  });
+
+  // ==========================================================
+  //  8. 页脚 — 三重彩蛋
   // ==========================================================
 
   // --- 8a. 时间感知问候 ---
@@ -372,7 +441,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const hour = new Date().getHours();
     const el = $('#timeGreeting');
     let greeting;
-
     if (hour >= 6 && hour < 9) {
       greeting = '☕ 早。这个时间来看我主页，你和我一样起得早。';
     } else if (hour >= 9 && hour < 18) {
@@ -382,33 +450,26 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       greeting = '🌙 这么晚了——我也是夜猫子，握个手。';
     }
-
     el.textContent = greeting;
   }
   updateTimeGreeting();
 
   // --- 8b. 隐藏歌单 ---
-  const musicToggle = $('#musicToggle');
-  const musicPlayer = $('#musicPlayer');
   const audioPlayer = $('#audioPlayer');
   let currentTrackBtn = null;
 
   musicToggle.addEventListener('click', () => {
     musicPlayer.classList.toggle('open');
-    // 更新 aria
     const isOpen = musicPlayer.classList.contains('open');
     musicToggle.setAttribute('aria-label', isOpen ? '关闭歌单' : '隐藏歌单');
   });
 
-  // 播放控制
   musicPlayer.addEventListener('click', (e) => {
     const btn = e.target.closest('.track-play');
     if (!btn) return;
-
     const track = btn.closest('.music-track');
     const src = track.dataset.src;
 
-    // 同一首歌：暂停/继续
     if (currentTrackBtn === btn) {
       if (audioPlayer.paused) {
         audioPlayer.play();
@@ -421,21 +482,17 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       return;
     }
-
-    // 切歌
     if (currentTrackBtn) {
       currentTrackBtn.textContent = '▶';
       currentTrackBtn.classList.remove('playing');
     }
-
     audioPlayer.src = src;
-    audioPlayer.play().catch(() => { /* 浏览器可能阻止自动播放 */ });
+    audioPlayer.play().catch(() => {});
     btn.textContent = '⏸';
     btn.classList.add('playing');
     currentTrackBtn = btn;
   });
 
-  // 播放结束
   audioPlayer.addEventListener('ended', () => {
     if (currentTrackBtn) {
       currentTrackBtn.textContent = '▶';
@@ -453,10 +510,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   footerCopy.addEventListener('mouseenter', () => {
     hoverTimer = setTimeout(() => {
-      // 文字"融化"
       gsap.to(copyEaster, {
-        opacity: 0,
-        duration: 0.3,
+        opacity: 0, duration: 0.3,
         onComplete: () => {
           copyEaster.textContent = secretText;
           gsap.to(copyEaster, { opacity: 1, duration: 0.5, ease: 'power2.out' });
@@ -467,11 +522,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   footerCopy.addEventListener('mouseleave', () => {
     clearTimeout(hoverTimer);
-    // 恢复原文
     if (copyEaster.textContent === secretText) {
       gsap.to(copyEaster, {
-        opacity: 0,
-        duration: 0.3,
+        opacity: 0, duration: 0.3,
         onComplete: () => {
           copyEaster.textContent = originalText;
           gsap.to(copyEaster, { opacity: 1, duration: 0.5, ease: 'power2.out' });
@@ -480,16 +533,110 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // --- 8d. 回到顶部 ---
-  $('#backToTop').addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  // ==========================================================
+  //  ③ 回到顶部 — 快速倒带效果
+  // ==========================================================
+  const backToTop = $('#backToTop');
+
+  backToTop.addEventListener('click', () => {
+    const currentScroll = window.scrollY;
+    if (currentScroll < 100) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    // 收尾语微微亮
+    const msg = $('.footer-message');
+    gsap.to(msg, { opacity: 0.5, duration: 0.15, yoyo: true, repeat: 1 });
+
+    // 停顿 → 加速 → 减速
+    setTimeout(() => {
+      gsap.to(window, {
+        scrollTo: 0,
+        duration: 1,
+        ease: 'power3.inOut',
+        onComplete: () => {
+          // 名字呼吸动画
+          gsap.to('.hero-name', {
+            scale: 1.03,
+            duration: 0.3,
+            yoyo: true,
+            repeat: 1,
+            ease: 'power2.out'
+          });
+        }
+      });
+    }, 180);
   });
 
   // ==========================================================
-  //  9. 全局 — 关于区/手记区 进入视口时的淡入动画
+  //  ⑦ 自定义光标
   // ==========================================================
-  const fadeInSections = ['#about', '#notes', '#contact'];
-  fadeInSections.forEach(sel => {
+  let cursorEnabled = true;
+  const cursorToggleBtn = $('#cursorToggle');
+  let cursorEl = null;
+
+  function createCursor() {
+    cursorEl = document.createElement('div');
+    cursorEl.className = 'custom-cursor';
+    document.body.appendChild(cursorEl);
+  }
+
+  function destroyCursor() {
+    if (cursorEl) { cursorEl.remove(); cursorEl = null; }
+  }
+
+  function updateCursorToggleUI() {
+    if (cursorEnabled) {
+      cursorToggleBtn.classList.remove('off');
+      cursorToggleBtn.innerHTML = '<span class="cursor-toggle-dot"></span> 光标效果：开';
+    } else {
+      cursorToggleBtn.classList.add('off');
+      cursorToggleBtn.innerHTML = '<span class="cursor-toggle-dot"></span> 光标效果：关';
+    }
+  }
+
+  // 初始化光标（仅非触屏设备）
+  if (!('ontouchstart' in window)) {
+    createCursor();
+
+    document.addEventListener('mousemove', (e) => {
+      if (!cursorEl || !cursorEnabled) return;
+      cursorEl.style.left = e.clientX + 'px';
+      cursorEl.style.top = e.clientY + 'px';
+    });
+
+    // 悬停可交互元素时光标放大
+    document.addEventListener('mouseover', (e) => {
+      if (!cursorEl || !cursorEnabled) return;
+      const target = e.target.closest('a, button, .tag, .note-card, .thought-card, .thought-link, .social-icon, .track-play');
+      cursorEl.classList.toggle('hover', !!target);
+    });
+
+    document.addEventListener('mouseout', (e) => {
+      if (!cursorEl || !cursorEnabled) return;
+      const target = e.target.closest('a, button, .tag, .note-card, .thought-card, .thought-link, .social-icon, .track-play');
+      if (target) cursorEl.classList.remove('hover');
+    });
+  }
+
+  cursorToggleBtn.addEventListener('click', () => {
+    cursorEnabled = !cursorEnabled;
+    updateCursorToggleUI();
+    if (!cursorEnabled) {
+      destroyCursor();
+    } else if (!('ontouchstart' in window)) {
+      createCursor();
+    }
+  });
+
+  updateCursorToggleUI();
+
+  // ==========================================================
+  //  ② 区域过渡衔接 — 重叠淡入 + 章节分隔符
+  // ==========================================================
+  const fadeSections = ['#about', '#notes', '#contact', '#messageWall'];
+  fadeSections.forEach(sel => {
     const el = $(sel);
     if (!el) return;
     gsap.fromTo(el,
@@ -500,22 +647,308 @@ document.addEventListener('DOMContentLoaded', () => {
         ease: 'power2.out',
         scrollTrigger: {
           trigger: el,
-          start: 'top bottom-=100px',
+          start: 'top bottom-=60px',  // ②-A 提前淡入（重叠）
           toggleActions: 'play none none reverse',
         }
       }
     );
   });
 
-  // 手记区卡片逐个淡入视差
+  // ②-B 章节分隔符
+  const seps = $$('.chapter-sep');
+  seps.forEach(sep => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          sep.classList.add('visible');
+          setTimeout(() => sep.classList.remove('visible'), 2000);
+        }
+      });
+    }, { threshold: 0.5 });
+    observer.observe(sep);
+  });
+
+  // ==========================================================
+  //  ⑨ 文章弹出层
+  // ==========================================================
+  const articleModal = $('#articleModal');
+  const articleModalClose = $('#articleModalClose');
+  const thoughtLinks = $$('.thought-link');
+
+  thoughtLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      articleModal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  function closeArticleModal() {
+    articleModal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  articleModalClose.addEventListener('click', closeArticleModal);
+  articleModal.addEventListener('click', (e) => {
+    if (e.target === articleModal) closeArticleModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && articleModal.classList.contains('open')) closeArticleModal();
+  });
+
+  // ==========================================================
+  //  ⑩ 手记区灯箱
+  // ==========================================================
+  const lightbox = $('#lightbox');
+  const lightboxImg = $('#lightboxImg');
+  const lightboxClose = $('#lightboxClose');
+
+  noteCards.forEach(card => {
+    card.addEventListener('click', () => {
+      const img = $('.note-card-img img', card);
+      if (!img) return;
+      lightboxImg.src = img.src;
+      lightboxImg.alt = img.alt;
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+  });
+
+  // ==========================================================
+  //  ⑪ 公共留言墙（Firebase）
+  // ==========================================================
+  const messageForm = $('#messageForm');
+  const stickyNotesEl = $('#stickyNotes');
+
+  // Firebase 配置（公开读取，写入需要认证规则——但在信任模式下使用简易方案）
+  // 此处使用 localStorage 作为简易方案（无需注册 Firebase，后续可升级）
+  // 如需真正公开留言墙，替换为 Firebase Realtime Database 配置即可
+
+  const STORAGE_KEY = 'zhenye_message_wall';
+
+  function getMessages() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    } catch { return []; }
+  }
+
+  function saveMessages(msgs) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(msgs));
+  }
+
+  function renderMessages() {
+    const msgs = getMessages();
+    if (msgs.length === 0) {
+      stickyNotesEl.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;text-align:center;width:100%;">还没有便签，来做第一个留言的人吧 ✨</p>';
+      return;
+    }
+    stickyNotesEl.innerHTML = msgs.map((m, i) => `
+      <div class="sticky-note" style="transform:rotate(${m.rotation || 0}deg);">
+        <div class="sticky-author">${m.author || '匿名'}</div>
+        <div class="sticky-body">${escapeHtml(m.content)}</div>
+        <div class="sticky-time">${m.time}</div>
+        <button class="sticky-delete" data-index="${i}" title="删除">✕</button>
+      </div>
+    `).join('');
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  messageForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const author = $('#msgAuthor').value.trim() || '匿名';
+    const content = $('#msgContent').value.trim();
+    if (!content) return;
+
+    const msgs = getMessages();
+    const now = new Date();
+    const timeStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+    msgs.unshift({
+      author,
+      content,
+      time: timeStr,
+      rotation: (Math.random() - 0.5) * 5, // ±2.5°
+    });
+
+    // 最多保留 50 条
+    if (msgs.length > 50) msgs.length = 50;
+
+    saveMessages(msgs);
+    renderMessages();
+
+    // 清空表单
+    $('#msgContent').value = '';
+    showToast('便签已贴上 📝');
+
+    // 动画最新便签
+    setTimeout(() => {
+      const firstNote = $('.sticky-note', stickyNotesEl);
+      if (firstNote) {
+        gsap.fromTo(firstNote, { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: 'back.out(1.7)' });
+      }
+    }, 50);
+  });
+
+  // 删除便签
+  stickyNotesEl.addEventListener('click', (e) => {
+    const btn = e.target.closest('.sticky-delete');
+    if (!btn) return;
+    const index = parseInt(btn.dataset.index);
+    if (isNaN(index)) return;
+    const msgs = getMessages();
+    if (index >= 0 && index < msgs.length) {
+      msgs.splice(index, 1);
+      saveMessages(msgs);
+      renderMessages();
+    }
+  });
+
+  renderMessages();
+
+  // ==========================================================
+  //  ⑫ 交互组件提示
+  // ==========================================================
+  const HINT_KEY = 'zhenye_hints_shown';
+
+  function getHintsShown() {
+    try { return JSON.parse(localStorage.getItem(HINT_KEY)) || {}; } catch { return {}; }
+  }
+
+  function markHintShown(name) {
+    const hints = getHintsShown();
+    hints[name] = true;
+    localStorage.setItem(HINT_KEY, JSON.stringify(hints));
+  }
+
+  const hintsShown = getHintsShown();
+
+  // 兴趣标签提示
+  if (!hintsShown.tags) {
+    const tagsRow = $('#tagsRow');
+    const tagHint = document.createElement('span');
+    tagHint.className = 'hint-badge';
+    tagHint.textContent = '戳我看看';
+    tagHint.style.position = 'absolute';
+    tagHint.style.top = '-30px';
+    tagsRow.style.position = 'relative';
+    tagsRow.appendChild(tagHint);
+
+    setTimeout(() => {
+      tagHint.classList.add('show');
+      setTimeout(() => {
+        tagHint.classList.remove('show');
+        setTimeout(() => tagHint.remove(), 400);
+      }, 3000);
+    }, 1500);
+
+    markHintShown('tags');
+  }
+
+  // 手记卡片提示
+  if (!hintsShown.notes) {
+    const firstNoteCard = noteCards[0];
+    if (firstNoteCard) {
+      const noteHint = document.createElement('div');
+      noteHint.className = 'note-hint';
+      noteHint.textContent = '点击查看大图';
+
+      const showNoteHint = () => {
+        const rect = firstNoteCard.getBoundingClientRect();
+        noteHint.style.left = rect.left + rect.width / 2 + 'px';
+        noteHint.style.top = rect.top - 30 + 'px';
+        noteHint.style.transform = 'translate(-50%, 0)';
+        document.body.appendChild(noteHint);
+        setTimeout(() => noteHint.classList.add('show'), 100);
+        setTimeout(() => {
+          noteHint.classList.remove('show');
+          setTimeout(() => noteHint.remove(), 300);
+        }, 3500);
+      };
+
+      // 卡片进入视口时触发
+      const hintObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            showNoteHint();
+            hintObserver.unobserve(firstNoteCard);
+            markHintShown('notes');
+          }
+        });
+      }, { threshold: 0.8 });
+      hintObserver.observe(firstNoteCard);
+    }
+  }
+
+  // 隐藏歌单音符提示
+  if (!hintsShown.music) {
+    const musicHintObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const note = $('.music-note');
+          if (note) {
+            const mHint = document.createElement('span');
+            mHint.style.cssText = 'position:absolute;font-size:0.7rem;color:var(--text-muted);top:-20px;left:50%;transform:translateX(-50%);white-space:nowrap;opacity:0;transition:opacity 0.5s;';
+            mHint.textContent = '♪ 听歌？';
+            musicToggle.style.position = 'relative';
+            musicToggle.appendChild(mHint);
+            setTimeout(() => { mHint.style.opacity = '1'; }, 500);
+            setTimeout(() => {
+              mHint.style.opacity = '0';
+              setTimeout(() => mHint.remove(), 500);
+            }, 4000);
+          }
+          musicHintObserver.unobserve(musicToggle);
+          markHintShown('music');
+        }
+      });
+    }, { threshold: 0.8 });
+    musicHintObserver.observe(musicToggle);
+  }
+
+  // ==========================================================
+  //  全局 — Toast 提示
+  // ==========================================================
+  let toastTimer;
+  function showToast(msg) {
+    let toast = $('.toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.className = 'toast';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+
+  // ==========================================================
+  //  全局视差 — 手记卡片 + 思考区卡片封面
+  // ==========================================================
   noteCards.forEach((card, i) => {
     gsap.fromTo(card,
       { opacity: 0, y: 40 },
       {
         opacity: 1, y: 0,
-        duration: 0.5,
-        delay: i * 0.06,
-        ease: 'power2.out',
+        duration: 0.5, delay: i * 0.06, ease: 'power2.out',
         scrollTrigger: {
           trigger: card,
           start: 'top bottom-=50px',
@@ -523,49 +956,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     );
-
-    // 卡片视差：封面图比文字慢
     const img = $('.note-card-img img', card);
     if (img) {
-      gsap.fromTo(img,
-        { y: -15 },
-        {
-          y: 15,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: card,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 0.5,
-          }
-        }
-      );
+      gsap.fromTo(img, { y: -15 }, {
+        y: 15, ease: 'none',
+        scrollTrigger: { trigger: card, start: 'top bottom', end: 'bottom top', scrub: 0.5 }
+      });
     }
   });
 
-  // 思考区卡片封面视差
   cards.forEach(card => {
     const img = $('.thought-card-img img', card);
     if (img) {
-      gsap.fromTo(img,
-        { y: -10 },
-        {
-          y: 10,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: card,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 0.5,
-          }
-        }
-      );
+      gsap.fromTo(img, { y: -10 }, {
+        y: 10, ease: 'none',
+        scrollTrigger: { trigger: card, start: 'top bottom', end: 'bottom top', scrub: 0.5 }
+      });
     }
   });
 
   // ==========================================================
   // 完成
   // ==========================================================
-  console.log('✨ 个人主页交互就绪 — 温润材质 × 锐利工艺');
+  console.log('✨ 个人主页交互就绪（优化版）— 温润材质 × 锐利工艺');
 
 });

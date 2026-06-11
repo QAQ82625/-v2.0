@@ -50,6 +50,9 @@
     </div>
   </section>
 
+  <!-- 章节分隔 -->
+  <div class="chapter-sep" id="sep1">· · ·</div>
+
   <!-- ========== 二、关于区 ========== -->
   <section class="about" id="about">
     <h2 class="section-title">关于</h2>
@@ -89,6 +92,9 @@
       </div>
     </div>
   </section>
+
+  <!-- 章节分隔 -->
+  <div class="chapter-sep" id="sep2">· · ·</div>
 
   <!-- ========== 三、思考区（横向翻阅） ========== -->
   <section class="thoughts" id="thoughts">
@@ -198,6 +204,9 @@
     </div>
   </section>
 
+  <!-- 章节分隔 -->
+  <div class="chapter-sep" id="sep3">· · ·</div>
+
   <!-- ========== 四、手记区 ========== -->
   <section class="notes" id="notes">
     <h2 class="section-title">手记</h2>
@@ -277,12 +286,15 @@
     </div>
   </section>
 
+  <!-- 章节分隔 -->
+  <div class="chapter-sep" id="sep4">· · ·</div>
+
   <!-- ========== 五、联系区 ========== -->
   <section class="contact" id="contact">
     <h2 class="section-title">想和我聊聊？</h2>
 
     <div class="social-icons">
-      <a href="mailto:m17385892518@163.com" class="social-icon" data-label="写信给我" aria-label="邮箱">
+      <a href="javascript:void(0)" class="social-icon" data-label="写信给我" aria-label="邮箱" id="emailIcon">
         <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5">
           <rect x="2" y="4" width="20" height="16" rx="2"/>
           <path d="M22 4L12 13 2 4"/>
@@ -298,7 +310,7 @@
         <span class="social-label">看看视频</span>
       </a>
 
-      <a href="#" class="social-icon" data-label="听歌吗" aria-label="QQ音乐">
+      <a href="javascript:void(0)" class="social-icon" data-label="听歌吗" aria-label="QQ音乐" id="musicIcon">
         <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5">
           <circle cx="12" cy="12" r="10"/>
           <path d="M12 6v6l4 2"/>
@@ -307,6 +319,28 @@
       </a>
     </div>
   </section>
+
+  <!-- ========== 留言墙 ========== -->
+  <section class="message-wall" id="messageWall">
+    <h2 class="message-wall-title">留言便签</h2>
+
+    <form class="message-form" id="messageForm">
+      <div class="message-form-row">
+        <input type="text" id="msgAuthor" placeholder="你的名字（选填）" maxlength="20" autocomplete="off">
+      </div>
+      <textarea id="msgContent" placeholder="写点什么吧……" maxlength="200" required></textarea>
+      <button type="submit">贴上便签</button>
+    </form>
+
+    <div class="wall-divider">—— 路过的人留下的痕迹 ——</div>
+
+    <div class="sticky-notes" id="stickyNotes">
+      <!-- JS 动态填充 -->
+    </div>
+  </section>
+
+  <!-- 章节分隔 -->
+  <div class="chapter-sep" id="sep5">· · ·</div>
 
   <!-- ========== 六、页脚 ========== -->
   <footer class="footer" id="footer">
@@ -340,9 +374,14 @@
     <!-- 时间问候 -->
     <p class="footer-time" id="timeGreeting">🌿 白天的时光，适合慢慢看。</p>
 
+    <!-- 自定义光标开关 -->
+    <button class="cursor-toggle" id="cursorToggle" aria-label="光标效果开关">
+      <span class="cursor-toggle-dot"></span> 光标效果：开
+    </button>
+
     <!-- 版权行（隐藏彩蛋） -->
     <p class="footer-copy" id="footerCopy">
-      © 2024 胡臻烨
+      © 2026 胡臻烨
       <span class="copy-easter" id="copyEaster"> · 差不多行了</span>
     </p>
 
@@ -353,6 +392,24 @@
       </svg>
     </button>
   </footer>
+
+  <!-- ========== 文章弹出层 ========== -->
+  <div class="article-modal-overlay" id="articleModal">
+    <div class="article-modal">
+      <button class="article-modal-close" id="articleModalClose">✕</button>
+      <div class="article-modal-placeholder">
+        <span class="emoji">🚧</span>
+        <p>正在施工 ing……</p>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-top:0.5rem;">文章内容还在路上，敬请期待</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 手记灯箱 ========== -->
+  <div class="lightbox-overlay" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose">✕</button>
+    <img class="lightbox-img" id="lightboxImg" src="" alt="">
+  </div>
 
   <!-- ========== GSAP & ScrollTrigger CDN ========== -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>

@@ -60,6 +60,47 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   text-align: center;
   margin-bottom: 2.5rem;
   letter-spacing: 0.08em;
+  position: relative;
+  display: inline-block;
+  left: 50%;
+  transform: translateX(-50%);
+  padding-bottom: 0.6rem;
+}
+
+/* D1 — 手绘装饰线 */
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 1.5px;
+  background: none;
+  /* 手绘不规则感：双层虚线叠加 + 透明度变化 */
+  border-bottom: 1px solid rgba(143, 168, 138, 0.35);
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0,0,0,0.4) 15%,
+    rgba(0,0,0,0.9) 30%,
+    rgba(0,0,0,0.6) 45%,
+    rgba(0,0,0,1) 55%,
+    rgba(0,0,0,0.7) 70%,
+    rgba(0,0,0,0.3) 85%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0,0,0,0.4) 15%,
+    rgba(0,0,0,0.9) 30%,
+    rgba(0,0,0,0.6) 45%,
+    rgba(0,0,0,1) 55%,
+    rgba(0,0,0,0.7) 70%,
+    rgba(0,0,0,0.3) 85%,
+    transparent 100%
+  );
 }
 
 /* ============================================================
@@ -192,6 +233,17 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   line-height: 1.2;
   margin-bottom: 1rem;
   letter-spacing: 0.04em;
+  display: flex;
+  justify-content: center;
+  gap: 0.1em;
+}
+
+/* D1 — 逐字动画 */
+.hero-name .char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(-30px) rotate(-4deg);
+  will-change: transform, opacity;
 }
 
 .hero-tagline {
@@ -864,12 +916,13 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
    v2.0 — B3. 呼吸感动画
    ============================================================ */
 @keyframes nameBreathe {
-  0%, 100% { transform: scale(1); }
-  50%      { transform: scale(1.015); }
+  0%, 100% { transform: scale(1) translateY(0); }
+  50%      { transform: scale(1.015) translateY(-1px); }
 }
 
-.hero-name {
+.hero-name .char {
   animation: nameBreathe 4.5s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.3s);
 }
 
 @keyframes tagPulse {
@@ -925,6 +978,25 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   text-align: center;
   padding-top: 4rem;
   opacity: 0;
+  position: relative;
+  display: inline-block;
+  left: 50%;
+  transform: translateX(-50%);
+  padding-bottom: 0.5rem;
+}
+
+/* D1 — 手绘装饰线（思考区标题） */
+.thoughts-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 55%;
+  height: 1px;
+  border-bottom: 1px solid rgba(143, 168, 138, 0.35);
+  mask-image: linear-gradient(90deg, transparent, rgba(0,0,0,0.8) 20%, rgba(0,0,0,1) 50%, rgba(0,0,0,0.7) 80%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, rgba(0,0,0,0.8) 20%, rgba(0,0,0,1) 50%, rgba(0,0,0,0.7) 80%, transparent);
 }
 
 .thoughts-track-wrapper {
@@ -989,6 +1061,12 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   font-weight: 600;
   margin: 0.3rem 0 0.5rem;
   color: var(--text);
+  /* D1 — 标题字距微展开 */
+  transition: letter-spacing 0.6s var(--ease-out);
+}
+
+.thought-card:hover .thought-title {
+  letter-spacing: 0.04em;
 }
 
 .thought-summary {
@@ -1241,6 +1319,13 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   font-size: 0.95rem;
   color: var(--text-light);
   margin-bottom: 1.5rem;
+  /* D1 — 引文质感 */
+  font-family: var(--serif);
+  font-style: italic;
+  padding-left: 1rem;
+  border-left: 2px solid rgba(143, 168, 138, 0.3);
+  display: inline-block;
+  text-align: left;
 }
 
 /* 隐藏歌单 */
@@ -1816,6 +1901,159 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .toast.show {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
+}
+
+/* ============================================================
+   v2.0 D2 — 材质层深化（分级纸纹理）
+   ============================================================ */
+
+/* 全局底色轻纹理 */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    repeating-linear-gradient(
+      0deg, transparent, transparent 3px,
+      rgba(180, 160, 140, 0.012) 3px, rgba(180, 160, 140, 0.012) 4px
+    ),
+    repeating-linear-gradient(
+      90deg, transparent, transparent 5px,
+      rgba(180, 160, 140, 0.006) 5px, rgba(180, 160, 140, 0.006) 6px
+    );
+}
+
+/* 首屏：最浓纹理（旧书扉页） */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(160,140,115,0.025) 2px, rgba(160,140,115,0.025) 3px),
+    radial-gradient(ellipse at 60% 40%, transparent 30%, rgba(61,50,43,0.04) 100%);
+  opacity: 0.7;
+}
+
+/* 内容区：极淡纹理（新纸） */
+.about::after,
+.thoughts::after,
+.notes::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 4px, rgba(180,160,140,0.008) 4px, rgba(180,160,140,0.008) 5px);
+}
+
+/* 联系区、留言墙：极淡纹理 */
+.contact::after,
+.message-wall::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 6px, rgba(180,160,140,0.006) 6px, rgba(180,160,140,0.006) 7px);
+}
+
+/* 页脚：毛边纸纹理（稍粗糙） */
+.footer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(170,150,130,0.018) 2px, rgba(170,150,130,0.018) 3px),
+    repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(170,150,130,0.01) 3px, rgba(170,150,130,0.01) 4px);
+}
+
+/* 卡片独立微纹理 */
+.note-card,
+.thought-card,
+.data-panel-inner,
+.sticky-note {
+  position: relative;
+}
+
+.note-card::after,
+.thought-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 5px, rgba(200,190,170,0.015) 5px, rgba(200,190,170,0.015) 6px);
+}
+
+/* 确保卡片内部内容在纹理之上 */
+.note-card > *,
+.thought-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   v2.0 D3 — 色彩生命力
+   ============================================================ */
+
+/* D3 — 首屏光晕随时间流转 */
+@keyframes glowShift {
+  0%   { background: radial-gradient(circle, rgba(193,125,90,0.08) 0%, rgba(212,168,83,0.04) 30%, transparent 70%); }
+  33%  { background: radial-gradient(circle, rgba(212,168,83,0.08) 0%, rgba(193,160,100,0.04) 30%, transparent 70%); }
+  66%  { background: radial-gradient(circle, rgba(193,125,90,0.09) 0%, rgba(200,150,110,0.04) 30%, transparent 70%); }
+  100% { background: radial-gradient(circle, rgba(193,125,90,0.08) 0%, rgba(212,168,83,0.04) 30%, transparent 70%); }
+}
+
+.hero-glow {
+  animation: glowShift 25s ease-in-out infinite;
+}
+
+/* D3 — 链接水彩晕开 */
+a,
+.nav-link,
+.thought-link,
+.social-icon,
+.tag,
+.filter-btn,
+.track-play,
+.music-toggle {
+  transition: color 0.55s cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+/* D3 — 点缀色饱和度微呼吸 */
+@keyframes accentBreathe {
+  0%, 100% { box-shadow: 0 2px 16px rgba(193, 125, 90, 0.06); }
+  50%      { box-shadow: 0 2px 16px rgba(193, 125, 90, 0.09); }
+}
+
+.card-shadow-animate {
+  animation: accentBreathe 6s ease-in-out infinite;
+}
+
+/* 为思考区和手记区卡片添加色彩呼吸 */
+.thought-card,
+.note-card {
+  animation: accentBreathe 6s ease-in-out infinite;
+}
+
+/* 手机端恢复 section-title 居中显示 */
+@media (max-width: 640px) {
+  .section-title {
+    left: auto;
+    transform: none;
+    display: block;
+    text-align: center;
+  }
 }
 
 /* ============================================================

@@ -84,16 +84,33 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================================
-  //  3. 首屏 — 入场动画 + 光晕跟随
+  //  3. 首屏 — 入场动画（逐字飘落）+ 光晕跟随
   // ==========================================================
   const heroContent = $('.hero-content');
+  const heroGreeting = $('.hero-greeting');
+  const heroTagline = $('.hero-tagline');
+  const heroNameChars = $$('.hero-name .char');
   const scrollHint = $('#scrollHint');
   const heroGlow = $('#heroGlow');
   const hero = $('#hero');
 
-  gsap.timeline({ defaults: { ease: 'power3.out' } })
-    .to(heroContent, { opacity: 1, duration: 0.8 })
-    .to(scrollHint, { opacity: 1, duration: 0.6 }, '-=0.2');
+  // D1 — 逐字动画：光先到，字一个一个落下
+  const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+  heroTl
+    .to(heroContent, { opacity: 1, duration: 0.3 })
+    .fromTo(heroGreeting, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.6 }, '-=0.1')
+    .fromTo(heroNameChars,
+      { opacity: 0, y: -28, rotate: -3, scale: 0.92 },
+      {
+        opacity: 1, y: 0, rotate: 0, scale: 1,
+        duration: 0.55,
+        stagger: 0.18,
+        ease: 'back.out(1.5)',
+      },
+      '-=0.15'
+    )
+    .fromTo(heroTagline, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.55 }, '-=0.25')
+    .to(scrollHint, { opacity: 1, duration: 0.5 }, '-=0.15');
 
   // 光晕跟随鼠标（带阻尼）
   let glowX = window.innerWidth / 2;

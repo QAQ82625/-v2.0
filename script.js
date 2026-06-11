@@ -859,8 +859,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const hintsShown = getHintsShown();
 
-  // 兴趣标签提示
-  if (!hintsShown.tags) {
+  // 兴趣标签首次提示（hover badge）
+  {
     const tagsRow = $('#tagsRow');
     const tagHint = document.createElement('span');
     tagHint.className = 'hint-badge';
@@ -877,31 +877,16 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => tagHint.remove(), 400);
       }, 3500);
     }, 1500);
-
-    markHintShown('tags');
   }
 
-  // 兴趣标签持久指示器（小箭头）
-  if (!hintsShown.tags_indicator) {
-    const tagsRow = $('#tagsRow');
-    const indicator = document.createElement('span');
-    indicator.className = 'tags-indicator';
-    indicator.textContent = '▼';
-    indicator.title = '点击标签查看个人数据';
-    tagsRow.style.position = 'relative';
-    tagsRow.appendChild(indicator);
-    // 用户首次点击任意标签后隐藏指示器
-    tags.forEach(t => {
-      const origClick = t.onclick;
-      t.addEventListener('click', () => {
-        if (indicator.parentNode) {
-          indicator.style.opacity = '0';
-          setTimeout(() => indicator.remove(), 400);
-          markHintShown('tags_indicator');
-        }
-      }, { once: true });
-    });
-  }
+  // 兴趣标签持久指示器（小箭头，始终可见）
+  const tagsRow = $('#tagsRow');
+  const indicator = document.createElement('span');
+  indicator.className = 'tags-indicator';
+  indicator.textContent = '▼';
+  indicator.title = '点击标签查看个人数据';
+  tagsRow.style.position = 'relative';
+  tagsRow.appendChild(indicator);
 
   // 手记卡片提示
   if (!hintsShown.notes) {

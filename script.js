@@ -1689,6 +1689,36 @@ document.addEventListener('DOMContentLoaded', () => {
   atmosphereTick();
   setInterval(atmosphereTick, 30000); // 每30秒检查一次
 
+  // ==========================================================
+  //  v2.0 — 手帐元素初始化
+  // ==========================================================
+
+  // E: 日付贴纸
+  const dateSticker = $('#dateSticker');
+  if (dateSticker) {
+    const now = new Date();
+    const month = now.getMonth() + 1;
+    const day = now.getDate();
+    dateSticker.innerHTML = `<span class="month">${month}月</span><span class="day">${day}</span>`;
+  }
+
+  // C: 头像圈注椭圆
+  const avatarWrap = $('.about-avatar-wrap');
+  if (avatarWrap && !$('.avatar-oval', avatarWrap)) {
+    const oval = document.createElement('div');
+    oval.className = 'avatar-oval';
+    avatarWrap.appendChild(oval);
+  }
+
+  // B: 首屏日期章
+  const heroSec = $('#hero');
+  if (heroSec && !$('.date-stamp-hero', heroSec)) {
+    const stamp = document.createElement('div');
+    stamp.className = 'date-stamp-hero';
+    stamp.textContent = `${new Date().getFullYear()}`;
+    heroSec.appendChild(stamp);
+  }
+
   console.log('✨ 个人主页交互就绪 v2.0 — 温润材质 × 锐利工艺 × 生命律动');
 
 });

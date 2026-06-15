@@ -43,6 +43,8 @@
     <canvas id="particleCanvas"></canvas>
     <div class="hero-glow" id="heroGlow"></div>
     <div class="hero-content">
+      <!-- E: 日付贴纸 -->
+      <div class="date-sticker" id="dateSticker"></div>
       <p class="hero-greeting">你好，我是</p>
       <div class="hero-deco-line" id="heroDecoLine1">
         <span class="hero-diamond"></span>
@@ -66,10 +68,17 @@
   </section>
 
   <!-- 章节分隔 -->
-  <div class="chapter-sep" id="sep1"><span class="sep-diamond"></span></div>
+  <div class="chapter-sep" id="sep1">
+    <span class="sep-diamond"></span>
+    <span class="page-num">01</span>
+  </div>
 
   <!-- ========== 二、关于区 ========== -->
   <section class="about" id="about">
+    <!-- A: 胶带 -->
+    <div class="washi-tape tape-about"></div>
+    <!-- B: 印章 -->
+    <div class="ink-stamp stamp-collection">藏</div>
     <div class="section-frame" id="aboutFrame">
       <span class="corner corner-tl"></span><span class="corner corner-tr"></span>
       <span class="corner corner-bl"></span><span class="corner corner-br"></span>
@@ -77,13 +86,15 @@
     <div class="plant-decor plant-about">
       <img src="assets/植物svg/plants_cacti_flowerpot.svg" alt="" class="plant-svg" style="width:100%;height:100%;">
     </div>
-    <h2 class="section-title section-title-deco">关于</h2>
+    <h2 class="section-title section-title-deco section-title-highlight">关于</h2>
 
     <div class="about-card">
       <div class="about-avatar-wrap">
         <img src="assets/头像/头像.png" alt="胡臻烨的头像" class="about-avatar">
       </div>
-      <p class="about-intro">
+      <!-- F: 翘角贴纸 -->
+    <div class="peel-sticker peel-about-intro"></div>
+    <p class="about-intro">
         一个一直在思考的人，一个喜欢游戏与番剧的人，一个在遇到正事时还算正经的人。
       </p>
     </div>
@@ -117,14 +128,20 @@
   </section>
 
   <!-- 章节分隔 -->
-  <div class="chapter-sep" id="sep2"><span class="sep-diamond"></span></div>
+  <div class="chapter-sep" id="sep2">
+    <span class="sep-diamond"></span>
+    <span class="page-num">02</span>
+  </div>
 
   <!-- ========== 三、思考区（横向翻阅） ========== -->
   <section class="thoughts" id="thoughts">
+    <!-- A: 胶带 -->
+    <div class="washi-tape tape-thoughts"></div>
     <div class="plant-decor plant-thoughts">
       <img src="assets/植物svg/around_leaves_swirl_autumn.svg" alt="" class="plant-svg" style="width:100%;height:100%;">
     </div>
-    <h2 class="thoughts-title" id="thoughtsTitle">随笔</h2>
+    <!-- C: underline highlight -->
+    <h2 class="thoughts-title thoughts-title-highlight" id="thoughtsTitle">随笔</h2>
 
     <div class="thoughts-track-wrapper">
       <div class="thoughts-track" id="thoughtsTrack">
@@ -231,10 +248,21 @@
   </section>
 
   <!-- 章节分隔 -->
-  <div class="chapter-sep" id="sep3"><span class="sep-diamond"></span></div>
+  <div class="chapter-sep" id="sep3">
+    <span class="sep-diamond"></span>
+    <span class="page-num">03</span>
+  </div>
 
   <!-- ========== 四、手记区 ========== -->
   <section class="notes" id="notes">
+    <!-- A: 胶带 -->
+    <div class="washi-tape tape-notes"></div>
+    <!-- D: 碎纸片 -->
+    <div class="paper-scrap scrap-1"></div>
+    <div class="paper-scrap scrap-2"></div>
+    <div class="paper-scrap scrap-3"></div>
+    <!-- B: 星形印章 -->
+    <div class="ink-stamp stamp-star">✦</div>
     <div class="section-frame" id="notesFrame">
       <span class="corner corner-tl"></span><span class="corner corner-tr"></span>
       <span class="corner corner-bl"></span><span class="corner corner-br"></span>
@@ -242,7 +270,8 @@
     <div class="plant-decor plant-notes">
       <img src="assets/植物svg/leaves_vine_plant.svg" alt="" class="plant-svg" style="width:100%;height:100%;">
     </div>
-    <h2 class="section-title section-title-deco">手记</h2>
+    <!-- C: 荧光笔下划线 -->
+    <h2 class="section-title section-title-deco section-title-highlight">手记</h2>
 
     <!-- 分类筛选 -->
     <div class="filter-bar">
@@ -320,7 +349,10 @@
   </section>
 
   <!-- 章节分隔 -->
-  <div class="chapter-sep" id="sep4"><span class="sep-diamond"></span></div>
+  <div class="chapter-sep" id="sep4">
+    <span class="sep-diamond"></span>
+    <span class="page-num">04</span>
+  </div>
 
   <!-- ========== 五、联系区 ========== -->
   <section class="contact" id="contact">
@@ -357,6 +389,8 @@
 
   <!-- ========== 留言墙 ========== -->
   <section class="message-wall" id="messageWall">
+    <!-- A: 胶带 -->
+    <div class="washi-tape tape-wall"></div>
     <h2 class="message-wall-title">留言便签</h2>
 
     <form class="message-form" id="messageForm">
@@ -369,13 +403,19 @@
 
     <div class="wall-divider">—— 路过的人留下的痕迹 ——</div>
 
+    <!-- D: 碎纸片 -->
+    <div class="paper-scrap scrap-wall-1"></div>
+    <div class="paper-scrap scrap-wall-2"></div>
     <div class="sticky-notes" id="stickyNotes">
       <!-- JS 动态填充 -->
     </div>
   </section>
 
   <!-- 章节分隔 -->
-  <div class="chapter-sep" id="sep5"><span class="sep-diamond"></span></div>
+  <div class="chapter-sep" id="sep5">
+    <span class="sep-diamond"></span>
+    <span class="page-num">05</span>
+  </div>
 
   <!-- ========== 六、页脚 ========== -->
   <footer class="footer" id="footer">
@@ -384,6 +424,8 @@
     </div>
     <div class="footer-ornament">~</div>
 
+    <!-- B: "读"字印章 -->
+    <div class="ink-stamp stamp-read">读</div>
     <p class="footer-message">还有一些没放上来，下次再来吧。</p>
 
     <!-- 彩蛋成就入口 -->

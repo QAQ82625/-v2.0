@@ -46,14 +46,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
     dots.forEach(d => d.classList.toggle('active', d.dataset.target === current));
 
-    // ⑥ 导航栏高亮
+    // ⑥ 导航栏高亮 + 滑动下划线
+    let activeLink = null;
     navLinks.forEach(link => {
       const href = link.getAttribute('href').replace('#', '');
-      link.classList.toggle('active', href === current);
+      const isActive = href === current;
+      link.classList.toggle('active', isActive);
+      if (isActive) activeLink = link;
     });
+
+    // 滑动下划线
+    const indicator = $('#navIndicator');
+    if (indicator && activeLink) {
+      const linkRect = activeLink.getBoundingClientRect();
+      const navRect = $('.nav-links').getBoundingClientRect();
+      indicator.style.left = (linkRect.left - navRect.left) + 'px';
+      indicator.style.width = linkRect.width + 'px';
+    }
+
+    // 回到顶部环形进度
+    updateScrollRing();
   }
 
   window.addEventListener('scroll', updateSideDots, { passive: true });
+
+  // 回到顶部环形进度
+  function updateScrollRing() {
+    const ring = $('#backToTopRing');
+    if (!ring) return;
+    const scrollH = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = scrollH > 0 ? Math.min(1, window.scrollY / scrollH) : 0;
+    const circle = ring.querySelector('circle');
+    if (circle) {
+      const offset = 100 - progress * 100;
+      circle.setAttribute('stroke-dashoffset', offset);
+    }
+  }
 
   // 导航链接 + 侧边圆点：平滑滚动到目标区域
   navLinks.forEach(link => {
@@ -940,7 +968,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     stickyNotesEl.innerHTML = msgs.map((m, i) => `
-      <div class="sticky-note" style="transform:rotate(${m.rotation || 0}deg);">
+      <div class="sticky-note" class="sticky-note color-${m.colorIndex !== undefined ? m.colorIndex : i % 4}" style="transform:rotate(${m.rotation || 0}deg);">
         <div class="sticky-author">${m.author || '匿名'}</div>
         <div class="sticky-body">${escapeHtml(m.content)}</div>
         <div class="sticky-time">${m.time}</div>
@@ -965,11 +993,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const now = new Date();
     const timeStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
 
+    const colorIndex = msgs.length % 4; // 轮流分配颜色
     msgs.unshift({
       author,
       content,
       time: timeStr,
-      rotation: (Math.random() - 0.5) * 5, // ±2.5°
+      rotation: (Math.random() - 0.5) * 5,
+      colorIndex,
     });
 
     // 最多保留 50 条
@@ -1692,15 +1722,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================================
   //  v2.0 — 手帐元素初始化
   // ==========================================================
-
-  // E: 日付贴纸
-  const dateSticker = $('#dateSticker');
-  if (dateSticker) {
-    const now = new Date();
-    const month = now.getMonth() + 1;
-    const day = now.getDate();
-    dateSticker.innerHTML = `<span class="month">${month}月</span><span class="day">${day}</span>`;
-  }
 
   // C: 头像圈注椭圆
   const avatarWrap = $('.about-avatar-wrap');

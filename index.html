@@ -21,6 +21,7 @@
     <div class="nav-inner">
       <span class="nav-name">胡臻烨</span>
       <div class="nav-links">
+        <span class="nav-indicator" id="navIndicator"></span>
         <a href="#about" class="nav-link">关于</a>
         <a href="#thoughts" class="nav-link">思考</a>
         <a href="#notes" class="nav-link">手记</a>
@@ -43,8 +44,6 @@
     <canvas id="particleCanvas"></canvas>
     <div class="hero-glow" id="heroGlow"></div>
     <div class="hero-content">
-      <!-- E: 日付贴纸 -->
-      <div class="date-sticker" id="dateSticker"></div>
       <p class="hero-greeting">你好，我是</p>
       <div class="hero-deco-line" id="heroDecoLine1">
         <span class="hero-diamond"></span>
@@ -426,61 +425,60 @@
 
     <!-- B: "读"字印章 -->
     <div class="ink-stamp stamp-read">读</div>
-    <p class="footer-message">还有一些没放上来，下次再来吧。</p>
 
-    <!-- 彩蛋成就入口 -->
-    <span class="achievement-toggle" id="achievementToggle" title="彩蛋收集">👁️</span>
-
-    <!-- 彩蛋成就面板 -->
-    <div class="achievement-panel" id="achievementPanel">
-      <div class="achievement-grid" id="achievementGrid">
-        <!-- JS 动态填充 -->
-      </div>
+    <!-- 氛围组 -->
+    <div class="footer-section-group">
+      <p class="footer-message">还有一些没放上来，下次再来吧。</p>
+      <p class="footer-time" id="timeGreeting">🌿 白天的时光，适合慢慢看。</p>
     </div>
 
-    <!-- 隐藏歌单入口 -->
-    <button class="music-toggle" id="musicToggle" aria-label="隐藏歌单">
-      <span class="music-note">♪</span>
-    </button>
-
-    <!-- 迷你播放器 -->
-    <div class="music-player" id="musicPlayer">
-      <div class="music-player-inner">
-        <p class="music-player-title">🎧 听点什么</p>
-        <div class="music-track" data-src="assets/音乐素材/ChiliChill乐团 - 屑屑 (V0).mp3">
-          <span class="track-name">屑屑</span>
-          <span class="track-artist">ChiliChill</span>
-          <button class="track-play">▶</button>
-        </div>
-        <div class="music-track" data-src="assets/音乐素材/张杰 _ HOYO-MiX - 不眠之夜 (V0).mp3">
-          <span class="track-name">不眠之夜</span>
-          <span class="track-artist">张杰</span>
-          <button class="track-play">▶</button>
-        </div>
-        <audio id="audioPlayer" preload="none"></audio>
+    <!-- 互动组 -->
+    <div class="footer-section-group">
+      <span class="achievement-toggle" id="achievementToggle" title="彩蛋收集">👁️</span>
+      <div class="achievement-panel" id="achievementPanel">
+        <div class="achievement-grid" id="achievementGrid"><!-- JS 动态填充 --></div>
       </div>
+      <button class="music-toggle" id="musicToggle" aria-label="隐藏歌单">
+        <span class="music-note">♪</span>
+      </button>
+      <div class="music-player" id="musicPlayer">
+        <div class="music-player-inner">
+          <p class="music-player-title">🎧 听点什么</p>
+          <div class="music-track" data-src="assets/音乐素材/ChiliChill乐团 - 屑屑 (V0).mp3">
+            <span class="track-name">屑屑</span><span class="track-artist">ChiliChill</span>
+            <button class="track-play">▶</button>
+          </div>
+          <div class="music-track" data-src="assets/音乐素材/张杰 _ HOYO-MiX - 不眠之夜 (V0).mp3">
+            <span class="track-name">不眠之夜</span><span class="track-artist">张杰</span>
+            <button class="track-play">▶</button>
+          </div>
+          <audio id="audioPlayer" preload="none"></audio>
+        </div>
+      </div>
+      <button class="cursor-toggle" id="cursorToggle" aria-label="光标效果开关">
+        <span class="cursor-toggle-dot"></span> 光标效果：开
+      </button>
     </div>
 
-    <!-- 时间问候 -->
-    <p class="footer-time" id="timeGreeting">🌿 白天的时光，适合慢慢看。</p>
-
-    <!-- 自定义光标开关 -->
-    <button class="cursor-toggle" id="cursorToggle" aria-label="光标效果开关">
-      <span class="cursor-toggle-dot"></span> 光标效果：开
-    </button>
-
-    <!-- 版权行（隐藏彩蛋） -->
-    <p class="footer-copy" id="footerCopy">
-      © 2026 胡臻烨
-      <span class="copy-easter" id="copyEaster"> · 差不多行了</span>
-    </p>
+    <!-- 收束组 -->
+    <div class="footer-section-group">
+      <p class="footer-copy" id="footerCopy">
+        © 2026 胡臻烨
+        <span class="copy-easter" id="copyEaster"> · 差不多行了</span>
+      </p>
+    </div>
 
     <!-- 回到顶部 -->
-    <button class="back-to-top" id="backToTop" aria-label="回到顶部">
-      <svg viewBox="0 0 24 24" width="20" height="20">
-        <path fill="none" stroke="currentColor" stroke-width="1.5" d="M6 15l6-6 6 6"/>
+    <div class="back-to-top-wrap">
+      <svg class="back-to-top-ring" id="backToTopRing" viewBox="0 0 36 36" width="50" height="50">
+        <circle cx="18" cy="18" r="16" fill="none" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="100" stroke-dashoffset="100" opacity="0.35"/>
       </svg>
-    </button>
+      <button class="back-to-top" id="backToTop" aria-label="回到顶部">
+        <svg viewBox="0 0 24 24" width="20" height="20">
+          <path fill="none" stroke="currentColor" stroke-width="1.5" d="M6 15l6-6 6 6"/>
+        </svg>
+      </button>
+    </div><!-- .back-to-top-wrap -->
   </footer>
 
   <!-- ========== 隐藏贪吃蛇游戏 ========== -->

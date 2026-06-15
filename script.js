@@ -90,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const heroGreeting = $('.hero-greeting');
   const heroTagline = $('.hero-tagline');
   const heroNameChars = $$('.hero-name .char');
+  const heroDecoLines = $$('.hero-deco-line');
   const scrollHint = $('#scrollHint');
   const heroGlow = $('#heroGlow');
   const hero = $('#hero');
@@ -99,6 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
   heroTl
     .to(heroContent, { opacity: 1, duration: 0.3 })
     .fromTo(heroGreeting, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.6 }, '-=0.1')
+    // 装饰线淡入
+    .to(heroDecoLines, { opacity: 1, duration: 0.5, stagger: 0.15 }, '-=0.4')
     .fromTo(heroNameChars,
       { opacity: 0, y: -28, rotate: -3, scale: 0.92 },
       {
@@ -369,17 +372,24 @@ document.addEventListener('DOMContentLoaded', () => {
       thoughtsTrack.style.paddingLeft = '';
       thoughtsTrack.style.paddingRight = '';
       if (thoughtsNavBar) thoughtsNavBar.style.display = 'none';
-      // 显示标题并保持可见
+      // 标题恢复相对定位（不居中固定）
+      thoughtsTitle.style.position = 'relative';
+      thoughtsTitle.style.top = 'auto';
+      thoughtsTitle.style.left = 'auto';
+      thoughtsTitle.style.transform = 'none';
       gsap.set(thoughtsTitle, { opacity: 1 });
-      // 卡片重置样式
       cards.forEach(c => gsap.set(c, { opacity: 1, scale: 1, clearProps: 'opacity,scale' }));
-      // 竖直排列
       thoughtsTrack.style.flexWrap = 'wrap';
       thoughtsTrack.style.justifyContent = 'center';
       return;
     }
 
     isMobileThoughts = false;
+    // 桌面端：标题固定在屏幕中央
+    thoughtsTitle.style.position = 'fixed';
+    thoughtsTitle.style.top = '50%';
+    thoughtsTitle.style.left = '50%';
+    thoughtsTitle.style.transform = 'translate(-50%, -50%)';
     thoughtsTrack.style.flexWrap = '';
     thoughtsTrack.style.justifyContent = '';
     if (thoughtsNavBar) thoughtsNavBar.style.display = '';
@@ -414,6 +424,9 @@ document.addEventListener('DOMContentLoaded', () => {
         onEnter: () => {
           gsap.to(thoughtsTitle, { opacity: 1, duration: 0.4 });
           updateSpotlight(0);
+        },
+        onLeaveBack: () => {
+          gsap.to(thoughtsTitle, { opacity: 0, duration: 0.3 });
         },
       }
     });
@@ -819,11 +832,24 @@ document.addEventListener('DOMContentLoaded', () => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           sep.classList.add('visible');
-          setTimeout(() => sep.classList.remove('visible'), 2000);
+          setTimeout(() => sep.classList.remove('visible'), 2500);
         }
       });
     }, { threshold: 0.5 });
     observer.observe(sep);
+  });
+
+  // 区域四角边框滚动可见
+  const sectionFrames = $$('.section-frame');
+  sectionFrames.forEach(frame => {
+    const frameObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          frame.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.3 });
+    frameObserver.observe(frame);
   });
 
   // ==========================================================

@@ -372,11 +372,11 @@ document.addEventListener('DOMContentLoaded', () => {
       thoughtsTrack.style.paddingLeft = '';
       thoughtsTrack.style.paddingRight = '';
       if (thoughtsNavBar) thoughtsNavBar.style.display = 'none';
-      // 标题恢复相对定位（不居中固定）
-      thoughtsTitle.style.position = 'relative';
-      thoughtsTitle.style.top = 'auto';
-      thoughtsTitle.style.left = 'auto';
-      thoughtsTitle.style.transform = 'none';
+      // 标题恢复自然定位
+      thoughtsTitle.style.position = '';
+      thoughtsTitle.style.top = '';
+      thoughtsTitle.style.left = '';
+      thoughtsTitle.style.transform = '';
       gsap.set(thoughtsTitle, { opacity: 1 });
       cards.forEach(c => gsap.set(c, { opacity: 1, scale: 1, clearProps: 'opacity,scale' }));
       thoughtsTrack.style.flexWrap = 'wrap';
@@ -385,11 +385,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     isMobileThoughts = false;
-    // 桌面端：标题固定在屏幕中央
-    thoughtsTitle.style.position = 'fixed';
-    thoughtsTitle.style.top = '50%';
-    thoughtsTitle.style.left = '50%';
-    thoughtsTitle.style.transform = 'translate(-50%, -50%)';
+    // 标题在顶部，卡片在下方居中
+    thoughtsTitle.style.position = '';
+    thoughtsTitle.style.top = '';
+    thoughtsTitle.style.left = '';
+    thoughtsTitle.style.transform = '';
     thoughtsTrack.style.flexWrap = '';
     thoughtsTrack.style.justifyContent = '';
     if (thoughtsNavBar) thoughtsNavBar.style.display = '';

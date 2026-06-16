@@ -324,6 +324,15 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   line-height: 2;
 }
 
+.about-meta {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.4rem;
+  font-family: var(--serif);
+  letter-spacing: 0.04em;
+}
+
 /* ---------- 兴趣标签 ---------- */
 .interests {
   text-align: center;

@@ -1742,6 +1742,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (period.key === 'auto') {
       timePreview.classList.remove('override');
+      currentAtmosphere = null; // 强制重置，确保恢复当前真实色调
       atmosphereTick(); // 恢复真实时间
     } else {
       timePreview.classList.add('override');

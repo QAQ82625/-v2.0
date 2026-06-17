@@ -968,7 +968,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     stickyNotesEl.innerHTML = msgs.map((m, i) => `
-      <div class="sticky-note" class="sticky-note color-${m.colorIndex !== undefined ? m.colorIndex : i % 4}" style="transform:rotate(${m.rotation || 0}deg);">
+      <div class="sticky-note color-${m.colorIndex !== undefined ? m.colorIndex : i % 4}" style="transform:rotate(${m.rotation || 0}deg);">
         <div class="sticky-author">${m.author || '匿名'}</div>
         <div class="sticky-body">${escapeHtml(m.content)}</div>
         <div class="sticky-time">${m.time}</div>
@@ -1718,6 +1718,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
   atmosphereTick();
   setInterval(atmosphereTick, 30000); // 每30秒检查一次
+
+  // ==========================================================
+  //  v2.0 — 时间预览钟表（用于实验报告截图）
+  // ==========================================================
+  const timePreview = $('#timePreview');
+  const timePreviewLabel = $('#timePreviewLabel');
+  const TIME_PERIODS = [
+    { key: 'auto',    label: '当前', icon: '🕐', desc: '跟随真实时间' },
+    { key: 'dawn',    label: '清晨', icon: '🌅', desc: '6:00-9:00' },
+    { key: 'morning', label: '上午', icon: '☀️', desc: '9:00-12:00' },
+    { key: 'noon',    label: '午后', icon: '🌤️', desc: '12:00-18:00' },
+    { key: 'dusk',    label: '傍晚', icon: '🌆', desc: '18:00-22:00' },
+    { key: 'night',   label: '深夜', icon: '🌙', desc: '22:00-6:00' },
+  ];
+  let timePeriodIndex = 0; // 0 = auto (default)
+
+  timePreview.addEventListener('click', () => {
+    timePeriodIndex = (timePeriodIndex + 1) % TIME_PERIODS.length;
+    const period = TIME_PERIODS[timePeriodIndex];
+    timePreviewLabel.textContent = period.label;
+    timePreview.querySelector('.time-preview-icon').textContent = period.icon;
+
+    if (period.key === 'auto') {
+      timePreview.classList.remove('override');
+      atmosphereTick(); // 恢复真实时间
+    } else {
+      timePreview.classList.add('override');
+      const atm = ATMOSPHERE[period.key];
+      if (atm) {
+        // 构造与 getAtmosphere 返回格式一致的对象
+        const fakeAtm = { key: period.key, ...atm };
+        applyAtmosphere(fakeAtm);
+        // 也更新问候语
+        const greetings = {
+          dawn: '☕ 早。这个时间来看我主页，你和我一样起得早。',
+          morning: '🌿 白天的时光，适合慢慢看。',
+          noon: '🌿 白天的时光，适合慢慢看。',
+          dusk: '🌆 傍晚好。这个时候翻主页，是在等人吗？',
+          night: '🌙 这么晚了——我也是夜猫子，握个手。',
+        };
+        const el = $('#timeGreeting');
+        if (el && greetings[period.key]) el.textContent = greetings[period.key];
+      }
+    }
+  });
 
   // ==========================================================
   //  v2.0 — 手帐元素初始化

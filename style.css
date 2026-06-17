@@ -1866,6 +1866,43 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 }
 
 /* ============================================================
+   v2.0 — 时间预览钟表
+   ============================================================ */
+.time-preview {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 0.3s, color 0.3s;
+  user-select: none;
+  padding: 0.2rem 0.5rem;
+  border-radius: 100px;
+  margin-left: 0.2rem;
+}
+
+.time-preview:hover {
+  opacity: 0.85;
+  color: var(--accent);
+}
+
+.time-preview.override {
+  opacity: 0.9;
+  color: var(--accent);
+  background: rgba(193, 125, 90, 0.08);
+}
+
+.time-preview-icon {
+  font-size: 0.9rem;
+}
+
+.time-preview-label {
+  font-size: 0.7rem;
+}
+
+/* ============================================================
    优化：思考区卡片"聚光灯"
    ============================================================ */
 .thought-card.dimmed {

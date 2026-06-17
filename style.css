@@ -2327,8 +2327,8 @@ body::before {
   pointer-events: none;
   z-index: 0;
   background:
-    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(170,150,130,0.018) 2px, rgba(170,150,130,0.018) 3px),
-    repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(170,150,130,0.01) 3px, rgba(170,150,130,0.01) 4px);
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(170,150,130,0.045) 2px, rgba(170,150,130,0.045) 3px),
+    repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(170,150,130,0.025) 3px, rgba(170,150,130,0.025) 4px);
 }
 
 /* 卡片独立微纹理 */

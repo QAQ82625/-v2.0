@@ -1,0 +1,27 @@
+\section{Introduction}
+\label{sec:intro}
+
+The emergence of AI-powered coding assistants---such as Claude Code, GitHub Copilot, and Cursor---has fundamentally changed how software is built.
+These tools enable a paradigm termed \textit{Vibe Coding}, where users describe desired functionality in natural language and AI generates corresponding code~\cite{sarkar2025vibe}.
+This paradigm is particularly transformative for non-programmers, who can now produce functional websites and applications without writing a single line of HTML, CSS, or JavaScript.
+
+However, early enthusiasm masks a critical challenge: \textit{prompt quality dictates output quality}.
+A vague instruction like ``make me a nice homepage'' produces generic, template-like results, while a detailed prompt specifying color palette, typography, layout grid, animation style, and interaction logic can yield professional-grade output.
+The gap between these two outcomes is not merely technical---it is fundamentally a \textit{design communication} problem.
+Non-expert users typically lack the vocabulary and mental models to articulate design intent with the precision that AI requires for high-quality generation.
+
+We investigate this problem through a self-experiment: building a personal homepage that includes self-introduction, data visualization of personal interests (gaming, music, film, anime), and interactive easter eggs.
+Our task mirrors a real-world scenario: a university student with no programming or design background attempting to create a distinctive personal website.
+
+We test two contrasting strategies:
+
+\begin{enumerate}
+    \item \textbf{Incremental Build}: Prompt AI to create a page skeleton, then iteratively add modules (self-intro $\rightarrow$ visualization $\rightarrow$ easter eggs), adjusting styling and behavior through per-module prompts.
+    \item \textbf{Design-First}: Before writing any code, spend significant dialogue rounds co-designing a comprehensive specification with AI---covering design philosophy, color system, typography, region architecture, interaction specifications, and animation principles. Only then implement against this specification.
+\end{enumerate}
+
+Our contributions are threefold:
+(1) We document the failure modes of Incremental Build in a real non-expert Vibe Coding scenario, identifying \textit{lack of design anchor} as the root cause.
+(2) We formalize Design-First Vibe Coding as a five-step methodology and demonstrate its effectiveness through a complete implementation.
+(3) We provide qualitative comparison between the two strategies across multiple dimensions---design consistency, communication overhead, revision cost, and final output quality---offering practical guidance for non-expert Vibe Coders.
+\end{enumerate}

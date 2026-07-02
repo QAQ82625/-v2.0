@@ -1,0 +1,24 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+We presented a comparative study of two Vibe Coding strategies for non-expert web development.
+Through a self-experiment building a personal homepage, we demonstrated that Incremental Build---constructing a page skeleton and iteratively adding modules---fails at an early stage due to the absence of a unifying design concept.
+Without a design anchor, each prompt operates independently, making style consistency impossible and causing the user to feel a lack of control over the final output.
+
+In contrast, Design-First Vibe Coding---co-designing a comprehensive specification with AI before implementation---produced a polished, multi-region website with sophisticated interactions.
+By separating design ideation from code generation, this strategy transforms the user's role from designer to design reviewer, enabling non-experts to leverage AI's design capabilities rather than being limited by their own.
+
+Our key findings are:
+
+\begin{enumerate}
+    \item \textbf{Design ideation is not overhead---it is the foundation.} The 20\% of dialogue rounds spent on design before coding prevented the style drift and communication escalation that doomed the Incremental Build approach.
+    \item \textbf{AI as design partner, not code machine.} The most effective prompts asked AI to propose design options, not to generate code. This pattern---AI proposes, user judges, AI refines---is more efficient than the user attempting to specify design parameters directly.
+    \item \textbf{The design document serves dual purpose.} It is simultaneously a human-readable specification (for the user to verify design intent) and an AI-readable constraint (for the model to reference during implementation and correction).
+    \item \textbf{Browser testing reveals what design documents cannot capture.} Even with detailed specifications, certain qualities---visual weight, animation feel, interaction affordance---only become apparent through actual use. The experience-driven iteration loop (test $\rightarrow$ identify gap $\rightarrow$ prompt correction $\rightarrow$ verify) is an essential complement to Design-First.
+\end{enumerate}
+
+Limitations of this work include its single-subject design (one user, one task) and the confounding of strategy with AI tool (Codex for Incremental Build vs. Claude Code for Design-First).
+Future work could control for tool effects, involve multiple users with varying design aptitude, and test Design-First on more complex application types beyond static websites.
+
+For practitioners, our recommendation is clear: \textit{before asking AI to write code, ask AI to help you design.}
+The investment in design ideation pays for itself through reduced revision overhead and dramatically improved output quality.

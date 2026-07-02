@@ -1,0 +1,27 @@
+\section{Related Work}
+\label{sec:related}
+
+\subsection{AI-Assisted Code Generation}
+
+Large language models (LLMs) have demonstrated remarkable capabilities in code generation tasks~\cite{chen2021codex,li2023starcoder}.
+Tools built on these models---GitHub Copilot~\cite{bird2022taking}, Claude Code by Anthropic, and Cursor---integrate code generation into development workflows, enabling developers to describe functionality in natural language and receive executable code in response.
+Recent work has explored using these tools for end-to-end application development, where non-programmers build complete applications entirely through natural language~\cite{jiang2024low}~\cite{vaithilingam2022expectation}.
+
+\subsection{Prompt Engineering for Code Generation}
+
+The quality of AI-generated code depends heavily on prompt quality.
+Research in prompt engineering has identified several effective strategies: providing structured specifications~\cite{white2023prompt}, using few-shot examples~\cite{brown2020language}, chain-of-thought reasoning~\cite{wei2022chain}, and iterative refinement through dialogue~\cite{nijkamp2022codegen}.
+However, most prompt engineering research focuses on \textit{technical} prompts---those written by developers who understand code structure.
+Our work differs in focusing on \textit{design} prompts written by non-experts who lack programming and design vocabulary.
+
+\subsection{Design Systems and Specifications}
+
+Design systems---collections of reusable components guided by clear standards---have become standard practice in professional web development~\cite{kholmatova2017design}.
+Tools like Figma, Design Tokens, and component libraries enable teams to maintain visual consistency across large projects.
+In the context of Vibe Coding, the design specification serves an analogous role: it acts as the ``single source of truth'' that constrains AI generation to maintain coherence across independently prompted modules.
+
+\subsection{Vibe Coding Practices}
+
+The term ``Vibe Coding'' was popularized by Andrej Karpathy in early 2025~\cite{karpathy2025vibe} to describe a workflow where developers ``fully give in to the vibes, embrace exponentials, and forget that the code even exists.''
+While early adopters have shared anecdotal experiences about Vibe Coding workflows, systematic study of different Vibe Coding strategies---particularly for non-expert users---remains limited.
+Our work contributes a comparative analysis of two distinct strategies through a real implementation case study.

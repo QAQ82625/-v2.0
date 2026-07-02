@@ -1,0 +1,84 @@
+\section{Experiment: Building a Personal Homepage}
+\label{sec:experiment}
+
+We evaluate both strategies through a self-experiment: building a personal homepage containing self-introduction, data visualization, and interactive easter eggs.
+The task was performed by a university student with no programming background and limited design experience.
+
+\subsection{Strategy A: Incremental Build (Codex)}
+
+The Incremental Build strategy was attempted first using OpenAI's Codex.
+The user instructed the AI to build a page skeleton (HTML structure + basic CSS), then added a splash screen animation and a background image.
+The plan was to subsequently add content modules one by one.
+
+\textbf{Outcome:} The process stalled at the skeleton stage.
+The generated skeleton appeared generic and template-like, lacking any distinctive design character.
+The user reported feeling a ``lack of control''---every element was added through the user's prompts, yet the user had no clear vision of what the final page should look like.
+Without a design anchor, each prompt was essentially a random walk through the design space.
+
+\textbf{Failure Analysis:} We identify three specific failure modes:
+
+\begin{enumerate}
+    \item \textbf{No Design Anchor.} Without first establishing color palette, typography, or design philosophy, each prompt operates in a vacuum. The AI produces code that is technically correct but aesthetically directionless.
+    \item \textbf{Predicted Communication Escalation.} Although the process halted before many modules were added, the user could foresee that each subsequent module would require increasingly precise prompts to match a fuzzy mental image---a communication cost that scales with module count.
+    \item \textbf{Style Drift Risk.} Without a unified design document, independently prompted modules would inevitably develop inconsistent visual styles---colors that don't match, spacing that doesn't align, animations with different personalities.
+\end{enumerate}
+
+\subsection{Strategy B: Design-First (Claude Code)}
+
+The Design-First strategy was then attempted using Anthropic's Claude Code (Claude Opus 4.8 model).
+Following the five-step methodology described in Section~\ref{sec:method}, the user spent approximately 20\% of total dialogue rounds on design ideation before any code was written.
+
+\textbf{Outcome:} The final implementation spans approximately 3,700 lines of code (HTML: 470 lines, CSS: 3,100 lines, JavaScript: 1,700 lines) and includes:
+
+\begin{itemize}
+    \item \textbf{Six sequentially arranged regions} with smooth scroll navigation and chapter separators.
+    \item \textbf{Four themed data visualization panels} for gaming (pixel art cartridge with sprite animation), music (rotating vinyl disc with waveform bars), film (vintage ticket stub), and anime (CRT television with scanlines and bullet comments).
+    \item \textbf{A horizontal scroll ``signature interaction''} powered by GSAP ScrollTrigger pin+scrub, converting vertical scroll input to horizontal card traversal with spotlight focus effect.
+    \item \textbf{A layered easter egg system}: time-aware greeting (auto-display), hidden playlist (click-triggered), hidden message (hover-timeout-triggered), a Snake mini-game (5-click sequence on footer ornament), and an achievement badge collection.
+    \item \textbf{Scrapbook-style visual decoration}: washi tape, ink stamps, paper scraps, hand-drawn lines, date stickers, and page numbers---all implemented in CSS without additional image assets.
+    \item \textbf{Responsive design} with mobile fallback (vertical card layout replacing horizontal scroll below 640px).
+\end{itemize}
+
+\subsection{Qualitative Comparison}
+
+\begin{table}[h]
+\centering
+\caption{Qualitative comparison of the two Vibe Coding strategies.}
+\label{tab:comparison}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{p{0.45\columnwidth}p{0.45\columnwidth}}
+\hline
+\textbf{Incremental Build (Codex)} & \textbf{Design-First (Claude Code)} \\
+\hline
+Build skeleton $\rightarrow$ add modules & Discuss design $\rightarrow$ write spec $\rightarrow$ implement \\
+\hline
+Modules independently adjusted; style drifts & Design document locks global direction \\
+\hline
+Each module requires high-precision prompts & Design phase confirms direction; implementation references spec \\
+\hline
+Revision cost scales with module count & Spec serves as correction anchor; modifications stay on-track \\
+\hline
+Suited for users with clear design vision & Suited for users needing AI to assist design decisions \\
+\hline
+Result: stalled at skeleton stage & Result: polished, multi-region website deployed to production \\
+\hline
+\end{tabular}%
+}
+\end{table}
+
+Table~\ref{tab:comparison} summarizes the qualitative differences.
+The key insight is that Design-First transforms the user's role: rather than being both designer and debugger, the user becomes a design reviewer---a role that requires only judgment (``does this look good?'') rather than expertise (``what color palette should I use?'').
+
+\subsection{Experience-Driven Iteration}
+
+An important finding is that even with a comprehensive design document, the first implementation (v1.0) contained issues that only became apparent through actual browser testing.
+These included: a back-to-top button that blended into the footer background (insufficient visual weight), navigation links that jumped rather than scrolled smoothly (functionally correct but aesthetically jarring), social media icons with broken or incorrect behaviors (a mailto: link that failed on unconfigured clients, a music icon that used a clock SVG), and card surface lighting that was too bright when rendered at full opacity.
+
+Each issue was resolved through targeted correction prompts that referenced the design document's aesthetic constraints.
+This experience-driven iteration loop is a natural complement to Design-First: the document provides the target, the browser reveals gaps between target and reality, and the user provides precise corrections.
+
+\subsection{Implementation Statistics}
+
+The final codebase contains approximately 3,700 lines across three files: \texttt{index.html} (page structure with six semantic regions, 470 lines), \texttt{style.css} (all styling with CSS custom properties, responsive breakpoints at 900px and 640px, approximately 3,100 lines), and \texttt{script.js} (GSAP-driven interactions including horizontal scroll, particle ecosystem, data panel theming, easter egg triggers, Snake game engine, and time-based atmosphere switching, approximately 1,700 lines).
+The site is deployed via GitHub Pages at \url{https://qaq82625.github.io/-v2.0/}.
+The complete dialogue comprised approximately 200+ conversational rounds, covering design ideation, implementation, and iterative refinement.

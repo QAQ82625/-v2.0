@@ -1,24 +1,24 @@
-\section{Conclusion}
+\section{结论}
 \label{sec:conclusion}
 
-We presented a comparative study of two Vibe Coding strategies for non-expert web development.
-Through a self-experiment building a personal homepage, we demonstrated that Incremental Build---constructing a page skeleton and iteratively adding modules---fails at an early stage due to the absence of a unifying design concept.
-Without a design anchor, each prompt operates independently, making style consistency impossible and causing the user to feel a lack of control over the final output.
+本文对面向非专业用户的两种Vibe Coding策略进行了对比研究。
+通过构建个人主页的自我实验，我们证明：增量构建——先搭建页面骨架再逐步添加模块——在早期即因缺乏统一的设计理念而失败。
+没有设计锚点，每次Prompt都在独立运作，风格一致性无法维系，用户对最终产出感到失控。
 
-In contrast, Design-First Vibe Coding---co-designing a comprehensive specification with AI before implementation---produced a polished, multi-region website with sophisticated interactions.
-By separating design ideation from code generation, this strategy transforms the user's role from designer to design reviewer, enabling non-experts to leverage AI's design capabilities rather than being limited by their own.
+相比之下，设计优先的Vibe Coding——在编码前先与AI共同设计完整规范——成功产出了一个具备复杂交互的完整多区域网站。
+通过将设计构思与代码生成相分离，该策略将用户的角色从设计者转变为设计评审者，使非专业用户能够借助AI的设计能力，而非受限于自身的设计水平。
 
-Our key findings are:
+本文的核心发现如下：
 
 \begin{enumerate}
-    \item \textbf{Design ideation is not overhead---it is the foundation.} The 20\% of dialogue rounds spent on design before coding prevented the style drift and communication escalation that doomed the Incremental Build approach.
-    \item \textbf{AI as design partner, not code machine.} The most effective prompts asked AI to propose design options, not to generate code. This pattern---AI proposes, user judges, AI refines---is more efficient than the user attempting to specify design parameters directly.
-    \item \textbf{The design document serves dual purpose.} It is simultaneously a human-readable specification (for the user to verify design intent) and an AI-readable constraint (for the model to reference during implementation and correction).
-    \item \textbf{Browser testing reveals what design documents cannot capture.} Even with detailed specifications, certain qualities---visual weight, animation feel, interaction affordance---only become apparent through actual use. The experience-driven iteration loop (test $\rightarrow$ identify gap $\rightarrow$ prompt correction $\rightarrow$ verify) is an essential complement to Design-First.
+    \item \textbf{设计构思不是额外开销，而是根基。}在编码前投入的20\%对话轮次用于设计讨论，防止了导致增量构建失败的风格漂移和沟通成本攀升。
+    \item \textbf{将AI视为设计伙伴，而非代码机器。}最有效的Prompt是让AI\textit{提出设计方案}，而非直接生成代码。这种模式——AI提案、用户判断、AI优化——比用户直接指定设计参数更加高效。
+    \item \textbf{设计文档具备双重用途。}它既是人类可读的规范（供用户验证设计意图），也是AI可读的约束（供模型在实现和纠错时参照）。
+    \item \textbf{浏览器测试揭示设计文档无法捕捉的问题。}即使规范详尽，某些品质——视觉权重、动画手感、交互可发现性——只有通过实际使用才能显现。体验驱动迭代循环（测试$\rightarrow$发现偏差$\rightarrow$Prompt纠正$\rightarrow$验证）是设计优先策略的必要补充。
 \end{enumerate}
 
-Limitations of this work include its single-subject design (one user, one task) and the confounding of strategy with AI tool (Codex for Incremental Build vs. Claude Code for Design-First).
-Future work could control for tool effects, involve multiple users with varying design aptitude, and test Design-First on more complex application types beyond static websites.
+本研究存在一定局限，包括单被试设计（一名用户、一个任务）以及策略与AI工具的偶发（增量构建使用Codex，设计优先使用Claude Code）。
+未来工作可以控制工具变量的影响，引入多名不同设计能力的用户参与，并在静态网站之外的更复杂应用类型上测试设计优先策略。
 
-For practitioners, our recommendation is clear: \textit{before asking AI to write code, ask AI to help you design.}
-The investment in design ideation pays for itself through reduced revision overhead and dramatically improved output quality.
+对于实践者，我们的建议清晰明确：\textit{在让AI写代码之前，先让AI帮助你做设计。}
+设计构思的投入通过降低修改开销和大幅提升产出质量来回报自身。

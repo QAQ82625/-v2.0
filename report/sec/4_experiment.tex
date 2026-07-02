@@ -1,84 +1,84 @@
-\section{Experiment: Building a Personal Homepage}
+\section{实验：构建个人主页}
 \label{sec:experiment}
 
-We evaluate both strategies through a self-experiment: building a personal homepage containing self-introduction, data visualization, and interactive easter eggs.
-The task was performed by a university student with no programming background and limited design experience.
+我们通过一次自我实验来评估两种策略：构建一个包含自我介绍、数据可视化和交互彩蛋的个人主页。
+任务由一名无编程背景、设计经验有限的大学生完成。
 
-\subsection{Strategy A: Incremental Build (Codex)}
+\subsection{策略A：增量构建（Codex）}
 
-The Incremental Build strategy was attempted first using OpenAI's Codex.
-The user instructed the AI to build a page skeleton (HTML structure + basic CSS), then added a splash screen animation and a background image.
-The plan was to subsequently add content modules one by one.
+首先使用OpenAI的Codex尝试了增量构建策略。
+用户让AI构建页面骨架（HTML结构+基础CSS样式），然后添加了开屏动画和背景图。
+计划是随后逐个模块添加内容。
 
-\textbf{Outcome:} The process stalled at the skeleton stage.
-The generated skeleton appeared generic and template-like, lacking any distinctive design character.
-The user reported feeling a ``lack of control''---every element was added through the user's prompts, yet the user had no clear vision of what the final page should look like.
-Without a design anchor, each prompt was essentially a random walk through the design space.
+\textbf{结果：}整个过程在骨架阶段即停滞。
+AI生成的骨架模板感强烈，缺乏设计辨识度。
+用户报告感到"缺乏掌控"——虽然每个元素都是通过用户的Prompt添加的，但用户对最终成品没有任何清晰的画面。
+没有设计锚点，每次Prompt本质上都是在设计空间中的随机游走。
 
-\textbf{Failure Analysis:} We identify three specific failure modes:
+\textbf{失败分析：}我们识别出三个具体的失败模式：
 
 \begin{enumerate}
-    \item \textbf{No Design Anchor.} Without first establishing color palette, typography, or design philosophy, each prompt operates in a vacuum. The AI produces code that is technically correct but aesthetically directionless.
-    \item \textbf{Predicted Communication Escalation.} Although the process halted before many modules were added, the user could foresee that each subsequent module would require increasingly precise prompts to match a fuzzy mental image---a communication cost that scales with module count.
-    \item \textbf{Style Drift Risk.} Without a unified design document, independently prompted modules would inevitably develop inconsistent visual styles---colors that don't match, spacing that doesn't align, animations with different personalities.
+    \item \textbf{缺乏设计锚点。}在未首先确定色彩方案、字体或设计哲学的情况下，每次Prompt都在真空中运作。AI生成的代码在技术上正确，但在美学上毫无方向。
+    \item \textbf{可预见的沟通成本攀升。}虽然过程在添加大量模块之前就停止了，但用户已能预见：每个后续模块都需要越来越精准的Prompt来匹配模糊的想象画面——沟通成本将随模块数量线性增长。
+    \item \textbf{风格漂移风险。}没有统一的设计文档，独立Prompt生成的每个模块最终会形成互不一致的视觉风格——颜色不匹配、间距不对齐、动画性格各异。
 \end{enumerate}
 
-\subsection{Strategy B: Design-First (Claude Code)}
+\subsection{策略B：设计优先（Claude Code）}
 
-The Design-First strategy was then attempted using Anthropic's Claude Code (Claude Opus 4.8 model).
-Following the five-step methodology described in Section~\ref{sec:method}, the user spent approximately 20\% of total dialogue rounds on design ideation before any code was written.
+随后使用Anthropic的Claude Code（Claude Opus 4.8模型）尝试了设计优先策略。
+按照第\ref{sec:method}节描述的五步方法论，用户将大约20\%的对话轮次用于编码前的设计构思。
 
-\textbf{Outcome:} The final implementation spans approximately 3,700 lines of code (HTML: 470 lines, CSS: 3,100 lines, JavaScript: 1,700 lines) and includes:
+\textbf{结果：}最终实现包含约3,700行代码（HTML: 470行，CSS: 约3,100行，JavaScript: 约1,700行），并包括以下内容：
 
 \begin{itemize}
-    \item \textbf{Six sequentially arranged regions} with smooth scroll navigation and chapter separators.
-    \item \textbf{Four themed data visualization panels} for gaming (pixel art cartridge with sprite animation), music (rotating vinyl disc with waveform bars), film (vintage ticket stub), and anime (CRT television with scanlines and bullet comments).
-    \item \textbf{A horizontal scroll ``signature interaction''} powered by GSAP ScrollTrigger pin+scrub, converting vertical scroll input to horizontal card traversal with spotlight focus effect.
-    \item \textbf{A layered easter egg system}: time-aware greeting (auto-display), hidden playlist (click-triggered), hidden message (hover-timeout-triggered), a Snake mini-game (5-click sequence on footer ornament), and an achievement badge collection.
-    \item \textbf{Scrapbook-style visual decoration}: washi tape, ink stamps, paper scraps, hand-drawn lines, date stickers, and page numbers---all implemented in CSS without additional image assets.
-    \item \textbf{Responsive design} with mobile fallback (vertical card layout replacing horizontal scroll below 640px).
+    \item \textbf{六个按序排列的区域}，带有平滑滚动导航和章节分隔符。
+    \item \textbf{四个主题数据可视化面板}，分别对应游戏（像素卡带+精灵动画）、音乐（旋转黑胶唱片+声波柱）、影视（复古电影票根）和动漫（CRT电视+扫描线+弹幕）。
+    \item \textbf{横向翻阅"招牌交互"}，基于GSAP ScrollTrigger的pin+scrub实现，将垂直滚动输入映射为卡片水平遍历，并带有聚光灯聚焦效果。
+    \item \textbf{分层彩蛋系统}：时间感知问候（自动显示）、隐藏歌单（点击触发）、隐藏一句话（悬停超时触发）、贪吃蛇小游戏（连续点击页脚装饰符5次触发）、彩蛋成就徽章收集。
+    \item \textbf{手帐风格视觉装饰}：和纸胶带、印章、碎纸片、手绘线条、日期贴纸和页码——全部使用CSS实现，无需额外图片资源。
+    \item \textbf{响应式设计}，移动端降级策略（640px以下横向翻阅替换为竖直卡排列）。
 \end{itemize}
 
-\subsection{Qualitative Comparison}
+\subsection{定性对比}
 
 \begin{table}[h]
 \centering
-\caption{Qualitative comparison of the two Vibe Coding strategies.}
+\caption{两种Vibe Coding策略的定性对比。}
 \label{tab:comparison}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{p{0.45\columnwidth}p{0.45\columnwidth}}
 \hline
-\textbf{Incremental Build (Codex)} & \textbf{Design-First (Claude Code)} \\
+\textbf{增量构建（Codex）} & \textbf{设计优先（Claude Code）} \\
 \hline
-Build skeleton $\rightarrow$ add modules & Discuss design $\rightarrow$ write spec $\rightarrow$ implement \\
+搭建骨架$\rightarrow$逐个添加模块 & 讨论设计$\rightarrow$编写规范$\rightarrow$执行实现 \\
 \hline
-Modules independently adjusted; style drifts & Design document locks global direction \\
+各模块独立调整，风格逐渐漂移 & 设计文档锁定全局方向 \\
 \hline
-Each module requires high-precision prompts & Design phase confirms direction; implementation references spec \\
+每个模块需高精度Prompt & 设计阶段确认方向，实现阶段有规范参照 \\
 \hline
-Revision cost scales with module count & Spec serves as correction anchor; modifications stay on-track \\
+修改成本随模块数量增长 & 规范作为纠错锚点，修改始终在轨道上 \\
 \hline
-Suited for users with clear design vision & Suited for users needing AI to assist design decisions \\
+适合已有明确设计稿的用户 & 适合需要AI辅助设计决策的用户 \\
 \hline
-Result: stalled at skeleton stage & Result: polished, multi-region website deployed to production \\
+结果：骨架阶段即停滞 & 结果：多区域完整网站，已部署上线 \\
 \hline
 \end{tabular}%
 }
 \end{table}
 
-Table~\ref{tab:comparison} summarizes the qualitative differences.
-The key insight is that Design-First transforms the user's role: rather than being both designer and debugger, the user becomes a design reviewer---a role that requires only judgment (``does this look good?'') rather than expertise (``what color palette should I use?'').
+表\ref{tab:comparison}总结了两种策略的定性差异。
+核心洞见是：设计优先策略转变了用户的角色——用户不再同时扮演设计师和调试员，而是成为设计评审者——这一角色仅需要判断力（"这看起来好不好？"）而非专业知识（"我应该用什么配色方案？"）。
 
-\subsection{Experience-Driven Iteration}
+\subsection{体验驱动的迭代}
 
-An important finding is that even with a comprehensive design document, the first implementation (v1.0) contained issues that only became apparent through actual browser testing.
-These included: a back-to-top button that blended into the footer background (insufficient visual weight), navigation links that jumped rather than scrolled smoothly (functionally correct but aesthetically jarring), social media icons with broken or incorrect behaviors (a mailto: link that failed on unconfigured clients, a music icon that used a clock SVG), and card surface lighting that was too bright when rendered at full opacity.
+一个重要发现是：即使有完整的设计文档，第一版实现（v1.0）仍存在只有在实际浏览器测试中才会发现的问题。
+这些问题包括：回到顶部按钮与页脚背景融合导致几乎不可见（视觉权重不足）、导航链接点击后直接跳转而非平滑滚动（功能正确但审美上突兀）、社交图标存在行为错误或缺失（mailto:链接在未配置邮件客户端的电脑上无效、音乐图标使用了时钟图案的SVG），以及卡片表面光泽渲染时过亮。
 
-Each issue was resolved through targeted correction prompts that referenced the design document's aesthetic constraints.
-This experience-driven iteration loop is a natural complement to Design-First: the document provides the target, the browser reveals gaps between target and reality, and the user provides precise corrections.
+每个问题都通过针对性的纠正Prompt解决，且纠正均以设计文档中的美学约束为参照。
+这种体验驱动的迭代循环是设计优先策略的自然补充：文档提供了目标，浏览器揭示了目标与现实之间的偏差，用户提供精准的纠正。
 
-\subsection{Implementation Statistics}
+\subsection{实现统计}
 
-The final codebase contains approximately 3,700 lines across three files: \texttt{index.html} (page structure with six semantic regions, 470 lines), \texttt{style.css} (all styling with CSS custom properties, responsive breakpoints at 900px and 640px, approximately 3,100 lines), and \texttt{script.js} (GSAP-driven interactions including horizontal scroll, particle ecosystem, data panel theming, easter egg triggers, Snake game engine, and time-based atmosphere switching, approximately 1,700 lines).
-The site is deployed via GitHub Pages at \url{https://qaq82625.github.io/-v2.0/}.
-The complete dialogue comprised approximately 200+ conversational rounds, covering design ideation, implementation, and iterative refinement.
+最终代码库包含三个文件共约3,700行：\texttt{index.html}（页面结构，六语义区域，470行）、\texttt{style.css}（全部样式，CSS自定义属性，900px和640px两处响应式断点，约3,100行）、\texttt{script.js}（GSAP驱动的交互，包含横向翻阅、粒子生态系统、数据面板主题切换、彩蛋触发、贪吃蛇游戏引擎、时间氛围切换，约1,700行）。
+网站通过GitHub Pages部署于\url{https://qaq82625.github.io/-v2.0/}。
+完整对话约200+轮，涵盖设计构思、代码实现和迭代优化三个阶段。

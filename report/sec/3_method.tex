@@ -1,47 +1,47 @@
-\section{Design-First Vibe Coding Method}
+\section{设计优先的Vibe Coding方法}
 \label{sec:method}
 
-We propose \textbf{Design-First Vibe Coding}, a five-step methodology for non-expert users to produce high-quality web applications through AI collaboration.
-The core principle is: \textit{transform the user's role from designer to design reviewer}---AI proposes design options, the user judges them, and the converged specification becomes the implementation blueprint.
+我们提出\textbf{设计优先的Vibe Coding}，这是一套面向非专业用户的五步方法论，通过与AI协作产出高质量的网页应用。
+其核心原则是：\textit{将用户的角色从设计者转变为设计评审者}——AI提出设计方案，用户进行判断，最终收敛的规范成为实现的蓝图。
 
-\subsection{Step 1: Establish Design Philosophy}
+\subsection{第一步：确立设计哲学}
 
-Rather than immediately requesting code, the user and AI engage in an extended dialogue to define the project's \textit{design philosophy}---an abstract framework that will govern all subsequent decisions.
+用户和AI不应急于生成代码，而是首先通过深入对话确定项目的\textit{设计哲学}——一个将约束所有后续决策的抽象框架。
 
-In our implementation, this dialogue produced a core tension: \textbf{Warmth $\times$ Sharpness}.
-Warmth manifests through material choices (cream paper-textured background, serif typography, generous whitespace), while sharpness manifests through craft precision (tightly choreographed animations, horizontal scroll interaction, layered micro-interactions).
-The AI formalized this into design constraints: all animations must complete within 0.3--0.8 seconds, use fast-in-slow-out easing curves, and serve a clear purpose.
+在我们的实现中，这段对话产生了一个核心矛盾：\textbf{温润 $\times$ 锐气}。
+温润通过材质选择来体现（奶油色纸张质感底色、衬线字体、充裕的留白），而锐气通过工艺精度来体现（精确编排的动画、横向翻阅交互、分层的微交互）。
+AI将其总结为设计约束：所有动画时长控制在0.3-0.8秒以内、采用快入慢出的缓动曲线、每个动效都服务于明确的目的。
 
-\subsection{Step 2: Define Information Architecture}
+\subsection{第二步：定义信息架构}
 
-With the design philosophy established, the user and AI plan the page's \textit{information architecture}---what regions exist, in what order, and what emotional rhythm they create for the visitor.
+设计哲学确立后，用户和AI共同规划页面的\textit{信息架构}——存在哪些区域、以什么顺序排列、以及它们为访客创造了怎样的情感节奏。
 
-Our implementation defined six sequentially arranged regions: (1) Hero---name and tagline with ambient particles; (2) About---avatar, self-introduction, and interactive interest tags; (3) Thoughts---horizontal scroll article cards (the ``signature interaction''); (4) Notes---masonry grid with category filtering; (5) Contact---social icons with hover micro-interactions; (6) Footer---layered easter eggs.
+我们的实现定义了六个按序排列的区域：（1）首屏——名字与态度宣言，配合氛围粒子；（2）关于——头像、自我介绍与可交互的兴趣标签；（3）思考——横向翻阅文章卡片（"招牌交互"）；（4）手记——瀑布流布局与分类筛选；（5）联系——社交图标与悬停微交互；（6）页脚——分层彩蛋系统。
 
-\subsection{Step 3: Detail Each Region}
+\subsection{第三步：逐区域细化}
 
-For each region, the user and AI specify: visual elements (what appears), interaction specifications (what happens on click/hover/scroll), and animation details (duration, easing, stagger).
+针对每个区域，用户和AI对以下内容进行具体约定：视觉元素（出现什么）、交互规格（点击/悬停/滚动时发生什么）、动画细节（时长、缓动、交错）。
 
-This step is where the AI's design capability most directly compensates for the user's design limitations.
-For example, when the user requested ``a horizontal scroll that feels like flipping through book spines,'' the AI proposed ScrollTrigger-based pin+scrub animation, analyzed which region best suited the interaction, and specified card focus effects, navigation dots, and mobile fallback behavior.
+正是在这一步，AI的设计能力最直接地弥补了用户的设计局限。
+例如，当用户提出"想要一种像翻书脊一样的横向滑动"时，AI提出了基于ScrollTrigger的pin+scrub实现方案，分析了哪个区域最适合这一交互，并细化了卡片聚焦效果、导航圆点以及移动端降级策略。
 
-\subsection{Step 4: Compile the Design Document}
+\subsection{第四步：编写设计文档}
 
-All decisions from Steps 1--3 are compiled into a single structured Markdown document (approximately 700 lines in our case).
-This document serves as the \textit{single source of truth} for Step 5.
-Critically, it is readable by both the human user (for verification) and the AI (for implementation reference).
+将前三步的所有决策编写为一份结构化的Markdown文档（我们的案例中约700行）。
+该文档在第五步中充当\textit{唯一真相来源}。
+关键的是，它既可供人类用户阅读（用于验证设计意图），也可供AI阅读（在实现过程中作为参考约束）。
 
-\subsection{Step 5: Implement Against Specification}
+\subsection{第五步：依据规范实现}
 
-Only after the design document is complete does code generation begin.
-The AI implements each region sequentially, referencing the design document for constraints.
-When implementation deviates from specification, the document serves as an objective reference for correction.
+只有当设计文档完成后，代码生成才开始。
+AI按照文档逐区域实现，将设计文档作为约束参考。
+当实现偏离规范时，文档为纠正提供了客观参照。
 
-This separation of design and implementation is the key differentiator from Incremental Build---design decisions are made before code, not discovered through code.
+这种设计决策与编码实现的分离，是设计优先策略区别于增量构建的关键所在——\textit{设计决策在代码之前做出，而非在代码中摸索。}
 
-\subsection{The Iteration Loop}
+\subsection{迭代循环}
 
-After Step 5 produces a working version, the user tests it in a browser.
-Discrepancies between the design document and actual experience---which are inevitable since some qualities (e.g., visual weight, animation feel) cannot be fully specified in text---are fed back to the AI for targeted correction.
-This loop is fundamentally different from Incremental Build's ``add module, adjust, repeat'' pattern: corrections are \textit{anchored to the design document}, not free-floating adjustments.
-The document constrains the repair space, preventing style drift.
+第五步产出一个可运行的版本后，用户在浏览器中进行实际测试。
+设计文档与实际体验之间的差异——这是不可避免的，因为某些品质（如视觉权重、动画手感）无法在文字中完全描述——会通过反馈给AI进行针对性修正。
+这一循环与增量构建的"添加模块、调整、重复"模式有本质区别：修正\textit{以设计文档为锚点}，而非无参照的任意调整。
+文档将修复空间约束在可控范围内，防止风格漂移。

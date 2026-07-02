@@ -1,27 +1,27 @@
-\section{Introduction}
+\section{引言}
 \label{sec:intro}
 
-The emergence of AI-powered coding assistants---such as Claude Code, GitHub Copilot, and Cursor---has fundamentally changed how software is built.
-These tools enable a paradigm termed \textit{Vibe Coding}, where users describe desired functionality in natural language and AI generates corresponding code~\cite{sarkar2025vibe}.
-This paradigm is particularly transformative for non-programmers, who can now produce functional websites and applications without writing a single line of HTML, CSS, or JavaScript.
+以Claude Code、GitHub Copilot、Cursor为代表的AI编程助手的出现，从根本上改变了软件的构建方式。
+这些工具使一种被称为\textit{Vibe Coding}的范式成为可能：用户用自然语言描述期望的功能，AI生成相应的代码~\cite{sarkar2025vibe}。
+这一范式对非程序员群体尤为变革性——他们现在无需编写一行HTML、CSS或JavaScript就能产出功能性的网站和应用。
 
-However, early enthusiasm masks a critical challenge: \textit{prompt quality dictates output quality}.
-A vague instruction like ``make me a nice homepage'' produces generic, template-like results, while a detailed prompt specifying color palette, typography, layout grid, animation style, and interaction logic can yield professional-grade output.
-The gap between these two outcomes is not merely technical---it is fundamentally a \textit{design communication} problem.
-Non-expert users typically lack the vocabulary and mental models to articulate design intent with the precision that AI requires for high-quality generation.
+然而，早期的乐观情绪掩盖了一个关键挑战：\textit{Prompt的质量决定了输出的质量}。
+模糊的指令如"帮我做一个好看的主页"产生的是通用的、模板化的结果，而详细描述了色彩方案、字体系统、布局网格、动画风格和交互逻辑的Prompt则能产生专业水准的产出。
+这两种结果之间的差距不仅仅是技术性的——它本质上是一个\textit{设计沟通}问题。
+非专业用户通常缺乏用AI所需精度来表达设计意图的词汇和思维模型。
 
-We investigate this problem through a self-experiment: building a personal homepage that includes self-introduction, data visualization of personal interests (gaming, music, film, anime), and interactive easter eggs.
-Our task mirrors a real-world scenario: a university student with no programming or design background attempting to create a distinctive personal website.
+我们通过一次自我实验来研究这个问题：构建一个包含自我介绍、个人兴趣数据可视化（游戏、音乐、影视、动漫）以及交互彩蛋的个人主页。
+该任务反映了一个真实的场景：一名没有编程或设计背景的大学生尝试创建一个有辨识度的个人网站。
 
-We test two contrasting strategies:
+我们测试了两种截然不同的策略：
 
 \begin{enumerate}
-    \item \textbf{Incremental Build}: Prompt AI to create a page skeleton, then iteratively add modules (self-intro $\rightarrow$ visualization $\rightarrow$ easter eggs), adjusting styling and behavior through per-module prompts.
-    \item \textbf{Design-First}: Before writing any code, spend significant dialogue rounds co-designing a comprehensive specification with AI---covering design philosophy, color system, typography, region architecture, interaction specifications, and animation principles. Only then implement against this specification.
+    \item \textbf{增量构建（Incremental Build）}：让AI创建页面骨架，然后逐步添加模块（自我介绍$\rightarrow$数据可视化$\rightarrow$彩蛋），通过每个模块的Prompt来调整样式和行为。
+    \item \textbf{设计优先（Design-First）}：在编写任何代码之前，花费大量对话轮次与AI共同设计一份完整的设计规范——涵盖设计哲学、色彩系统、字体系统、区域架构、交互规格和动画原则。然后才基于这份规范进行实现。
 \end{enumerate}
 
-Our contributions are threefold:
-(1) We document the failure modes of Incremental Build in a real non-expert Vibe Coding scenario, identifying \textit{lack of design anchor} as the root cause.
-(2) We formalize Design-First Vibe Coding as a five-step methodology and demonstrate its effectiveness through a complete implementation.
-(3) We provide qualitative comparison between the two strategies across multiple dimensions---design consistency, communication overhead, revision cost, and final output quality---offering practical guidance for non-expert Vibe Coders.
+本文的贡献有三点：
+（1）我们记录了增量构建在真实非专业Vibe Coding场景中的失败模式，指出\textit{缺乏设计锚点}是根本原因。
+（2）我们将设计优先的Vibe Coding总结为五步方法论，并通过一个完整的实现证明了其有效性。
+（3）我们从设计一致性、沟通开销、修改成本和最终产出质量等多个维度对两种策略进行了定性对比，为非专业Vibe Coder提供了实用指导。
 \end{enumerate}

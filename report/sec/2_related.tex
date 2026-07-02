@@ -1,27 +1,27 @@
-\section{Related Work}
+\section{相关工作}
 \label{sec:related}
 
-\subsection{AI-Assisted Code Generation}
+\subsection{AI辅助代码生成}
 
-Large language models (LLMs) have demonstrated remarkable capabilities in code generation tasks~\cite{chen2021codex,li2023starcoder}.
-Tools built on these models---GitHub Copilot~\cite{bird2022taking}, Claude Code by Anthropic, and Cursor---integrate code generation into development workflows, enabling developers to describe functionality in natural language and receive executable code in response.
-Recent work has explored using these tools for end-to-end application development, where non-programmers build complete applications entirely through natural language~\cite{jiang2024low}~\cite{vaithilingam2022expectation}.
+大语言模型（LLM）在代码生成任务中展现了卓越的能力~\cite{chen2021codex,li2023starcoder}。
+基于这些模型构建的工具——GitHub Copilot~\cite{bird2022taking}、Anthropic的Claude Code以及Cursor——将代码生成集成到开发工作流中，使开发者能够用自然语言描述功能并直接获得可执行代码。
+近期研究探索了使用这些工具进行端到端应用开发的可能性，即非程序员完全通过自然语言构建完整的应用程序~\cite{jiang2024low}~\cite{vaithilingam2022expectation}。
 
-\subsection{Prompt Engineering for Code Generation}
+\subsection{代码生成的提示工程}
 
-The quality of AI-generated code depends heavily on prompt quality.
-Research in prompt engineering has identified several effective strategies: providing structured specifications~\cite{white2023prompt}, using few-shot examples~\cite{brown2020language}, chain-of-thought reasoning~\cite{wei2022chain}, and iterative refinement through dialogue~\cite{nijkamp2022codegen}.
-However, most prompt engineering research focuses on \textit{technical} prompts---those written by developers who understand code structure.
-Our work differs in focusing on \textit{design} prompts written by non-experts who lack programming and design vocabulary.
+AI生成代码的质量在很大程度上取决于Prompt的质量。
+提示工程领域的研究已经识别出几种有效策略：提供结构化规范~\cite{white2023prompt}、使用少样本示例~\cite{brown2020language}、思维链推理~\cite{wei2022chain}，以及通过对话进行迭代细化~\cite{nijkamp2022codegen}。
+然而，大多数提示工程研究关注的是\textit{技术性}Prompt——由理解代码结构的开发者编写。
+本文的不同之处在于聚焦于非专业用户编写的\textit{设计性}Prompt，这些用户缺乏编程和设计词汇。
 
-\subsection{Design Systems and Specifications}
+\subsection{设计系统与规范}
 
-Design systems---collections of reusable components guided by clear standards---have become standard practice in professional web development~\cite{kholmatova2017design}.
-Tools like Figma, Design Tokens, and component libraries enable teams to maintain visual consistency across large projects.
-In the context of Vibe Coding, the design specification serves an analogous role: it acts as the ``single source of truth'' that constrains AI generation to maintain coherence across independently prompted modules.
+设计系统——由清晰标准指导的可复用组件集合——已成为专业网页开发的标准实践~\cite{kholmatova2017design}。
+Figma、Design Tokens和组件库等工具使团队能够在大型项目中保持视觉一致性。
+在Vibe Coding的语境中，设计规范扮演着类似的角色：它充当"唯一真相来源"，约束AI的生成行为，确保不同Prompt所构建的模块之间保持连贯性。
 
-\subsection{Vibe Coding Practices}
+\subsection{Vibe Coding实践}
 
-The term ``Vibe Coding'' was popularized by Andrej Karpathy in early 2025~\cite{karpathy2025vibe} to describe a workflow where developers ``fully give in to the vibes, embrace exponentials, and forget that the code even exists.''
-While early adopters have shared anecdotal experiences about Vibe Coding workflows, systematic study of different Vibe Coding strategies---particularly for non-expert users---remains limited.
-Our work contributes a comparative analysis of two distinct strategies through a real implementation case study.
+"Vibe Coding"一词由Andrej Karpathy于2025年初推广~\cite{karpathy2025vibe}，用来描述一种工作流程：开发者"完全顺应感觉，拥抱指数增长，甚至忘记代码的存在。"
+虽然早期采用者分享了关于Vibe Coding工作流的轶事经验，但对不同Vibe Coding策略——特别是针对非专业用户——的系统性研究仍然有限。
+本文通过一个真实的实现案例研究，对两种不同策略进行了对比分析。

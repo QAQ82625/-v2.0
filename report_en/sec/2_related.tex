@@ -1,0 +1,21 @@
+\section{Related Background}
+
+\subsection{AI Coding Tools and Vibe Coding}
+
+In recent years, AI coding tools such as Claude Code~\cite{anthropic2025claude}, GitHub Copilot, and Codex~\cite{openai2025codex} have advanced rapidly, enabling non-programmers to create functional web applications through natural language descriptions.
+The term ``Vibe Coding'' was coined by Andrej Karpathy in early 2025 on social media~\cite{karpathy2025vibe}, describing a development style where the programmer ``fully gives in to the vibes, embraces exponentials, and forgets that the code even exists.'' The term has since sparked widespread discussion in the developer community.
+Among the two tools recommended in the course, Claude Code (by Anthropic) is based on the Claude model, excels at front-end code generation and multi-turn iteration, and can directly read and write local files; Codex (by OpenAI) is based on the GPT model series, offers fast response speeds, and has rich community resources.
+Both support terminal or IDE plugin usage and require no programming background from the user.
+
+\subsection{Prompt Engineering and Code Generation}
+
+The quality of AI-generated code depends heavily on prompt quality. Prior work has shown that structured prompt specifications and iterative refinement through dialogue can significantly improve AI code generation quality~\cite{vaithilingam2022expectation}.
+The course materials offer similar practical advice: start small---let the AI produce the simplest runnable version first, then layer on complexity; be specific---``a Morandi color scheme, left-side fixed navigation, right-side main content area with three cards'' is far more effective than ``make a nice page''; it is fine not to understand the code, but one must understand the visual output---when the AI output is wrong, showing a screenshot or describing what you see is much more effective than asking it to self-check its code; above all, prefer real data---ten authentic, interesting data points far outweigh a hundred fabricated ones.
+
+\subsection{Design Consistency}
+
+In professional web development, Design Systems---collections of reusable components guided by clear standards---are widely used to maintain visual consistency across large projects~\cite{kholmatova2017design}.
+In the Vibe Coding context, where multiple modules are typically generated through separate prompts, maintaining stylistic consistency presents a practical challenge.
+The design document introduced in this experiment was created precisely to address this problem: it is not a traditional design specification meant to constrain human behavior, but rather a stable reference frame for the AI's code generation, ensuring a unified visual language across modules built from different prompts.
+
+It is worth noting that the above background discussion draws from course materials and publicly available information. The core contribution of this paper lies in the strategy comparison and actual webpage construction process described in Sections~3--4, and does not involve improvements to the aforementioned tools or methods.

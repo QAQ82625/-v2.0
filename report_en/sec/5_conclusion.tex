@@ -1,0 +1,25 @@
+\section{Summary and Reflection}
+
+This experiment compared the real-world effectiveness of two Vibe Coding strategies for a non-expert user by building a personal homepage featuring self-introduction, data visualization, and interactive easter eggs.
+
+The Incremental Build strategy stalled at the skeleton stage due to the absence of a pre-established design direction. The core issue was not the AI's coding capability, but rather the user's own lack of clarity about ``what kind of homepage I want''---when the user cannot clearly describe the target to the AI, each AI output is merely one step in a random walk, lacking a unified design language and cumulative directionality.
+
+The Design-First strategy, by explicitly separating design ideation from code implementation, achieved markedly superior results. Its key advantage lies in redistributing the responsibilities of ``designing'' and ``judging'': the AI is responsible for proposing design options (leveraging its broad design knowledge), and the user is responsible for judging whether the options are suitable (requiring only basic aesthetic sensibility). The two parties converge on a detailed design document, which subsequently serves as the ``reference coordinate system'' throughout code implementation and correction iterations.
+
+From this experiment, several practically useful insights for non-expert Vibe Coders can be distilled:
+
+\begin{enumerate}
+    \item \textbf{Design discussion is not wasted time.} Investing approximately 20\% of dialogue rounds in establishing design direction before coding is not ``delaying the start''---it is establishing a common reference frame for all subsequent modules. Without this reference frame, each module fights alone, and stylistic unity becomes impossible.
+
+    \item \textbf{The design document needs dual readability.} It must be comprehensible to the human user (for verifying ``this is the effect I want'') and to the AI (for use as constraints during code generation). In this experiment, a roughly 700-line Markdown design document successfully fulfilled both requirements.
+
+    \item \textbf{Paper design cannot fully substitute for real experience.} Even with a detailed design document, certain qualities---visual weight, animation brightness, interaction discoverability---only become apparent through actual browser use. The v1.0 to v1.1 iteration in this experiment included multiple such corrections: the back-to-top button's insufficient visual weight, the jarring feel of navigation jumps, the email icon's protocol failure, the music icon's SVG semantics error, and the card shine's excessive brightness parameters. These were all problems at the level of ``functionally correct but experientially wrong.'' A thorough browser testing pass after completing the first version is essential, converting discovered issues into precise feedback prompts.
+
+    \item \textbf{The precision of correction prompts determines iteration efficiency.} The ``negation + precise restatement'' pattern---e.g., ``not the title centered, the cards centered below the title''---preserves all of the AI's correct prior work while correcting only the deviating portion. This is far more efficient than vague ``change this'' or ``redo it'' instructions.
+
+    \item \textbf{Give logic, not just instructions.} Describing \textit{why} something should be done a certain way to the AI (e.g., ``three easter eggs tiered by discovery difficulty, so visitors with different levels of attentiveness each find something'') often produces more coherent, better-integrated output than simply describing \textit{what} to do (``add three easter eggs''). When the AI understands design intent, it can autonomously generate more reasonable and more consistent implementation plans.
+\end{enumerate}
+
+This experiment has the following limitations: first, the two strategies used different AI tools (Codex vs.\ Claude Code), so strategy effects and tool effects cannot be fully separated; second, the experiment is a single-subject, single-case study, and the generalizability of its conclusions requires further validation with more users across more task types; third, the ``20\% of dialogue rounds spent on design discussion'' proportion in the Design-First strategy is highly task-dependent---for simpler or more complex tasks, the optimal proportion may differ significantly.
+
+Despite these limitations, the experiment's core finding---\textit{in Vibe Coding, ``design first, then code'' is more conducive to high-quality output for non-expert users than ``design while coding''}---has intuitive plausibility and echoes the ``requirements analysis first'' engineering practice in professional software development. For future Vibe Coding practitioners, particularly those without design or programming backgrounds, this insight may be the most valuable takeaway.

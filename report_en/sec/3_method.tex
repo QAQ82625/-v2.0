@@ -1,0 +1,33 @@
+\section{Two Vibe Coding Strategies}
+
+This experiment involves two different Vibe Coding strategies. It should be noted that the two strategies used different AI tools---Codex for Incremental Build, Claude Code for Design-First---so there is some confounding between tool capability differences and strategy effects. However, based on the actual experience of the experiment, the fundamental factor driving the difference in outcomes was \textit{the timing and manner of design decision-making}, rather than tool capability alone.
+
+\subsection{Strategy 1: Incremental Build}
+
+The Incremental Build strategy is the most intuitive approach to Vibe Coding: \textbf{build skeleton $\rightarrow$ add module~A $\rightarrow$ adjust A's effects $\rightarrow$ add module~B $\rightarrow$ adjust B's effects $\rightarrow$ and so on.}
+No design direction is pre-established in this workflow---color palette, typography, animation style, etc., are all decided and adjusted on the fly as each module is added.
+In the experiment, Codex was first used to build a page skeleton (HTML structure and basic CSS), followed by adding a splash screen animation and a background image.
+The plan was to gradually add the self-introduction, data visualization, and easter egg modules once the skeleton was in place.
+
+\subsection{Strategy 2: Design-First}
+
+The core idea of the Design-First strategy is to \textit{explicitly separate design ideation from code implementation}. In this experiment, the strategy was executed through the following five steps:
+
+\begin{enumerate}
+    \item \textbf{Establish design philosophy.} Rather than rushing to generate code, first engage the AI in a discussion about the abstract ``feel'' of the project.
+    In the experiment, this dialogue ultimately established the ``Warmth~$\times$~Sharpness'' contradiction framework---the AI distilled this into ``warmth is the material, sharpness is the craft,'' and derived specific constraints: animation duration (0.3--0.8\,s), easing curves (fast-in-slow-out, \texttt{cubic-bezier(0.25, 0.46, 0.45, 0.94)}), and restraint in quantity (one to two visual focal points per page).
+    Warmth was concretely realized through material-level choices: warm cream (\texttt{\#faf7f2}) and off-white (\texttt{\#f5f0e8}) as base colors, deep brown-gray (\texttt{\#3d322b}) for body text instead of pure black, and terra-cotta (\texttt{\#c17d5a}) and sage green (\texttt{\#8fa88a}) as accent colors.
+    Typography used serif (Noto Serif SC) for headings, sans-serif (Noto Sans SC) for body text, and a handwriting font (ZCOOL XiaoWei) for decorative elements.
+    Critically, the user did not specify these exact parameters---the user expressed a directional feeling (``warm but not weak, sharp but not harsh''), and the AI translated that into precise design parameters.
+
+    \item \textbf{Plan the page skeleton.} Define a single-page narrative structure consisting of six regions (Hero, About, Thoughts, Notes, Contact, Footer) and their emotional rhythm---from capturing attention at the top to a warm, quiet close at the bottom.
+
+    \item \textbf{Detail each region.} For each of the six regions, specify visual elements (what appears), interaction specifications (what happens on click/hover/scroll), and animation details (duration, easing, stagger).
+    This step is where the AI's design capability most directly compensates for the user's limitations---the user expresses needs through metaphors and scene descriptions (e.g., ``like sliding a finger across book spines on a shelf''), and the AI translates these into concrete technical solutions (GSAP ScrollTrigger pin+scrub for converting vertical scroll input into horizontal card traversal).
+
+    \item \textbf{Compile the design document.} Aggregate all decisions from the preceding steps into a single structured Markdown document (approximately 700 lines in our case). This document serves as the \textit{single source of truth} for the subsequent implementation step. It is both human-readable (for the user to verify design intent) and AI-readable (for the model to reference during implementation and correction).
+
+    \item \textbf{Implement and iterate.} Write code region by region against the design document. After completing v1.0, perform thorough browser testing and correct any experience issues that the design document could not anticipate (e.g., visual weight of UI elements, animation parameter deviations, interaction discoverability) through precise feedback prompts.
+\end{enumerate}
+
+The most critical difference between the two strategies is this: in Incremental Build, the user is \textit{designing while coding}---each prompt must implicitly decide not only ``what to do'' but also ``what it should look like.'' In Design-First, these two concerns are explicitly separated---design decisions are made centrally during the design phase, the coding phase is about ``building to spec,'' and corrections can reference the design document as an objective anchor.
